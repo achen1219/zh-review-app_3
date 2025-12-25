@@ -3,46 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>女兒的中文探險</title>
+    <title>國小中文學習小老師</title>
     <style>
-        :root { --p: #6c5ce7; --s: #a29bfe; --bg: #f9f9fb; }
-        body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        :root { --p: #6c5ce7; --s: #a29bfe; --bg: #f9f9fb; --text: #2d3436; }
+        body { font-family: "Microsoft JhengHei", "教育部標準楷書", sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text); }
+        
+        /* 導覽列 */
         nav { background: white; padding: 12px; display: flex; justify-content: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        nav button { padding: 10px 20px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; background: #f1f2f6; color: #747d8c; }
+        nav button { padding: 10px 20px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; background: #f1f2f6; color: #747d8c; transition: 0.3s; }
         nav button.active { background: var(--p); color: white; }
         
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
-        .word-card { background: white; border-radius: 25px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: left; position: relative; }
-        .big-char { font-size: 90px; color: var(--p); cursor: pointer; font-weight: bold; text-align: center; display: block; line-height: 1.1; margin: 15px 0; }
         
-        .vocab-list { margin-top: 15px; border-top: 1px dashed #eee; padding-top: 15px; min-height: 50px; }
-        .vocab-item { font-size: 1.3rem; margin: 10px 0; color: #2d3436; cursor: pointer; display: flex; align-items: center; }
-        .vocab-item:before { content: "🎈"; margin-right: 10px; font-size: 1rem; }
+        /* 單字卡片 */
+        .word-card { background: white; border-radius: 25px; padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: left; position: relative; }
+        .tag { padding: 5px 12px; border-radius: 10px; color: white; font-size: 0.85rem; position: absolute; top: 15px; left: 15px; font-weight: bold; }
         
-        .tag { padding: 5px 12px; border-radius: 10px; color: white; font-size: 0.8rem; position: absolute; top: 15px; left: 15px; font-weight: bold; }
-        
+        .char-section { text-align: center; margin-bottom: 15px; }
+        .big-char { font-size: 100px; color: var(--p); cursor: pointer; font-weight: bold; display: inline-block; line-height: 1; }
+        .char-def { background: #f0f0ff; padding: 10px 15px; border-radius: 12px; font-size: 1rem; color: #555; margin: 10px 0; border-left: 4px solid var(--p); line-height: 1.5; }
+
+        /* 語詞列表 */
+        .vocab-list { margin-top: 15px; border-top: 1px dashed #eee; padding-top: 15px; }
+        .vocab-group { display: flex; flex-direction: column; gap: 12px; }
+        .vocab-item-box { background: #fafafa; border-radius: 15px; padding: 12px; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .vocab-item-box:hover { border-color: var(--s); background: #fff; }
+        .vocab-word { font-size: 1.4rem; font-weight: bold; color: #2d3436; margin-bottom: 4px; display: block; }
+        .vocab-def { font-size: 0.95rem; color: #636e72; line-height: 1.4; }
+
         #game-tab { display: none; }
+        .quiz-card { background: white; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .opt-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 1.8rem; border: 2px solid #f1f2f6; border-radius: 15px; background: white; cursor: pointer; font-weight: bold; }
 
-        .retry-btn { padding: 5px 10px; font-size: 0.8rem; background: #eee; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+        .loading-text { text-align: center; color: #a4b0be; margin-top: 50px; font-style: italic; }
     </style>
 </head>
 <body>
 
 <nav>
-    <button id="nav-learn" class="active" onclick="showTab('learn')">📖 學習模式</button>
-    <button id="nav-game" onclick="showTab('game')">🎮 挑戰遊戲</button>
+    <button id="nav-learn" class="active" onclick="switchTab('learn')">📖 學習模式</button>
+    <button id="nav-game" onclick="switchTab('game')">🎮 挑戰遊戲</button>
 </nav>
 
 <div class="container">
-    <h2 id="date-info" style="color:#57606f; text-align:center;">連線中...</h2>
+    <h2 id="date-info" style="color:#57606f; text-align:center; margin-bottom:20px;">📅 準備中...</h2>
+    
     <div id="learn-tab">
-        <div id="word-list" style="color:#a4b0be; text-align:center; margin-top:50px;">正在努力搬運語詞中...</div>
+        <div id="word-list" class="loading-text">🍭 正在向字典老師借書，請稍候...</div>
     </div>
+
     <div id="game-tab">
-        <div style="background: white; padding: 30px; border-radius: 25px; text-align: center;">
-            <div id="score" style="font-size: 1.1rem; color: #ffa502; font-weight: bold;">收集星星：0 ⭐</div>
-            <div id="q-text" style="font-size: 2rem; margin: 25px 0;"></div>
+        <div class="quiz-card">
+            <div id="score" style="font-size: 1.2rem; color: #ffa502; font-weight: bold; margin-bottom: 10px;">⭐ 星星數量：0</div>
+            <div id="q-text" style="font-size: 2rem; margin: 30px 0; line-height: 1.4;"></div>
             <div id="q-options"></div>
         </div>
     </div>
@@ -52,7 +65,7 @@
     const synth = window.speechSynthesis;
     let score = 0;
     let currentDayWords = [];
-    let vocabCache = {};
+    let wordDetails = {}; // 儲存字詞詳解
 
     async function init() {
         try {
@@ -61,113 +74,94 @@
             const today = new Date().toISOString().split('T')[0];
             const dateKey = scheduleData[today] ? today : Object.keys(scheduleData)[0];
             currentDayWords = scheduleData[dateKey];
-            document.getElementById('date-info').innerText = "📅 " + dateKey;
-            renderAllCards();
+            document.getElementById('date-info').innerText = "📅 " + dateKey + " 練習";
+            renderLearning();
         } catch (e) {
-            document.getElementById('word-list').innerHTML = "❌ 無法讀取 schedule.json，請檢查檔名。";
+            document.getElementById('word-list').innerHTML = "❌ 讀取 schedule.json 失敗。";
         }
     }
 
-    // 核心連線邏輯：嘗試多種方式獲取資料
-    async function fetchVocab(char) {
-        if (vocabCache[char]) return vocabCache[char];
+    // 抓取萌典詳解 (包含解釋與正確例詞)
+    async function fetchFullData(char) {
+        if (wordDetails[char]) return wordDetails[char];
 
-        const tryFetch = async (url) => {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            // 處理 allorigins 的特殊格式
-            const finalData = data.contents ? JSON.parse(data.contents) : data;
-            return finalData.relates || [];
-        };
-
-        const charEncoded = encodeURIComponent(char);
-        const moedictUrl = `https://www.moedict.tw/api/v2/index/${charEncoded}`;
+        const proxy = "https://api.allorigins.win/get?url=";
+        const target = `https://www.moedict.tw/a/${encodeURIComponent(char)}.json`;
         
-        // 嘗試列表：1. 直接連 2. Proxy A 3. Proxy B
-        const attempts = [
-            moedictUrl,
-            `https://api.allorigins.win/get?url=${encodeURIComponent(moedictUrl)}`,
-            `https://corsproxy.io/?${encodeURIComponent(moedictUrl)}`
-        ];
-
-        for (let url of attempts) {
-            try {
-                const list = await tryFetch(url);
-                if (list.length > 0) {
-                    const result = {
-                        v2: list.filter(v => v.length === 2).slice(0, 3),
-                        v3: list.filter(v => v.length === 3).slice(0, 1),
-                        v4: list.filter(v => v.length >= 4).slice(0, 1)
-                    };
-                    vocabCache[char] = result;
-                    return result;
+        try {
+            const res = await fetch(proxy + encodeURIComponent(target));
+            const json = await res.json();
+            const data = JSON.parse(json.contents);
+            
+            // 解析資料
+            const entry = data.h[0];
+            const charDef = entry.d[0].f.replace(/\[|\]/g, ''); // 取第一個定義
+            
+            // 從定義的例子或是相關詞中找語詞
+            let vocabs = [];
+            entry.d.forEach(d => {
+                if (d.e) {
+                    d.e.forEach(example => {
+                        // 提取 2-4 字的詞
+                        const match = example.match(/[\u4e00-\u9fa5]{2,4}/g);
+                        if (match) vocabs.push(...match);
+                    });
                 }
-            } catch (e) { continue; }
+            });
+            
+            // 如果例句沒詞，就從 relates 找
+            if (vocabs.length < 2 && data.relates) vocabs.push(...data.relates);
+
+            // 過濾掉單字，並去重
+            vocabs = [...new Set(vocabs.filter(v => v.includes(char) && v.length >= 2))].slice(0, 3);
+
+            // 抓取這些語詞的簡單解釋 (這步比較耗時，我們先做簡單處理)
+            const result = {
+                char: char,
+                def: charDef,
+                vocabs: vocabs.map(v => ({ word: v, def: "點擊發音練習" })) 
+            };
+            
+            wordDetails[char] = result;
+            return result;
+        } catch (e) {
+            return { char: char, def: "常見字", vocabs: [{word: char+"天", def: ""}] };
         }
-
-        // 如果全部失敗，啟動「智慧造詞備案」，不再出現 XX子
-        return getSmartFallback(char);
     }
 
-    function getSmartFallback(char) {
-        // 針對常見字根的智慧組合
-        const common = {
-            "嫩": ["嫩綠", "嫩葉", "嬌嫩"],
-            "猴": ["猴子", "小猴", "耍猴戲"],
-            "披": ["披風", "披上", "披星戴月"],
-            "信": ["寫信", "信心", "信用"],
-            "實": ["誠實", "果實", "實驗"],
-            "鐵": ["鐵路", "鋼鐵", "鐵門"],
-            "利": ["利息", "便利", "勝利"],
-            "康": ["健康", "康復", "安康"]
-        };
-        return { 
-            v2: common[char] || [char + "天", "大" + char, char + "色"], 
-            v3: [], 
-            v4: [] 
-        };
-    }
-
-    async function renderAllCards() {
-        const container = document.getElementById('word-list');
-        container.innerHTML = "";
+    async function renderLearning() {
+        const list = document.getElementById('word-list');
+        list.innerHTML = "";
         
         for (let i = 0; i < currentDayWords.length; i++) {
             const char = currentDayWords[i];
-            const cardId = `card-${i}`;
             const isNew = i < 2;
+            const data = await fetchFullData(char);
 
             const card = document.createElement('div');
             card.className = 'word-card';
             card.innerHTML = `
-                <span class="tag" style="background:${isNew ? '#ff7675':'#55efc4'}">${isNew ? '✨ 新挑戰' : '🔄 溫習'}</span>
-                <div class="big-char" onclick="speak('${char}')">${char}</div>
-                <div class="vocab-list" id="${cardId}">
-                    <span style="color:#ccc; font-size:0.9rem;">正在找好詞...</span>
+                <span class="tag" style="background:${isNew ? '#ff7675':'#55efc4'}">${isNew ? '✨ 新單字' : '🔄 溫習中'}</span>
+                <div class="char-section">
+                    <div class="big-char" onclick="speak('${char}')">${char}</div>
+                    <div class="char-def"><b>意思：</b>${data.def}</div>
+                </div>
+                <div class="vocab-list">
+                    <div class="vocab-group">
+                        ${data.vocabs.map(v => `
+                            <div class="vocab-item-box" onclick="speak('${v.word}')">
+                                <span class="vocab-word">${v.word}</span>
+                                <span class="vocab-def">點擊聽發音</span>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
-            container.appendChild(card);
-
-            // 非同步加載語詞，不卡住畫面
-            updateCardVocab(char, cardId);
+            list.appendChild(card);
         }
     }
 
-    async function updateCardVocab(char, elementId) {
-        const voc = await fetchVocab(char);
-        const el = document.getElementById(elementId);
-        if (!el) return;
-        
-        const all = [...voc.v2, ...voc.v3, ...voc.v4];
-        if (all.length > 0) {
-            el.innerHTML = all.map(v => `<div class="vocab-item" onclick="speak('${v}')">${v}</div>`).join('');
-        } else {
-            el.innerHTML = `<div class="vocab-item" onclick="speak('${char}天')">${char}天</div>`;
-        }
-    }
-
-    function showTab(tab) {
+    function switchTab(tab) {
         document.getElementById('learn-tab').style.display = tab === 'learn' ? 'block' : 'none';
         document.getElementById('game-tab').style.display = tab === 'game' ? 'block' : 'none';
         document.getElementById('nav-learn').className = tab === 'learn' ? 'active' : '';
@@ -178,17 +172,16 @@
     async function initGame() {
         const qText = document.getElementById('q-text');
         const qOpts = document.getElementById('q-options');
-        qText.innerText = "🎲 準備中...";
+        qText.innerText = "🎲 題目正在飛過來...";
         qOpts.innerHTML = "";
 
         const correctChar = currentDayWords[Math.floor(Math.random() * currentDayWords.length)];
-        const voc = await fetchVocab(correctChar);
-        const allVoc = [...voc.v2, ...voc.v3, ...voc.v4];
+        const data = await fetchFullData(correctChar);
+        
+        if (data.vocabs.length === 0) { initGame(); return; }
 
-        if(allVoc.length === 0) { initGame(); return; }
-
-        const target = allVoc[Math.floor(Math.random() * allVoc.length)];
-        qText.innerHTML = `這個字可以組成：<br><b style="font-size:2.8rem; color:var(--p);">${target.replace(correctChar, " □ ")}</b>`;
+        const target = data.vocabs[Math.floor(Math.random() * data.vocabs.length)].word;
+        qText.innerHTML = `哪個字可以組成：<br><b style="font-size:3rem; color:var(--p);">${target.replace(correctChar, " □ ")}</b>`;
 
         let options = [correctChar];
         while(options.length < 4) {
@@ -204,8 +197,8 @@
             btn.onclick = () => {
                 if(opt === correctChar) {
                     score++;
-                    document.getElementById('score').innerText = "收集星星：" + score + " ⭐";
-                    speak("答對了");
+                    document.getElementById('score').innerText = "⭐ 星星數量：" + score;
+                    speak("答對了，妳好厲害！");
                     initGame();
                 } else {
                     speak("再試一次");
