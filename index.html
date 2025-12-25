@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學生每日中文探險</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --bg: #f9f9fb;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "教育部標準楷書", sans-serif;
+            background-color: var(--bg);
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            color: #2d3436;
+        }
+
+        /* 頂部導航 */
+        nav {
+            width: 100%; background: white; padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-around;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        nav button {
+            border: none; background: none; font-size: 1.1rem;
+            font-weight: bold; cursor: pointer; color: #636e72;
+            padding: 10px 20px; border-radius: 20px;
+        }
+
+        nav button.active { background: var(--primary); color: white; }
+
+        /* 卡片設計 */
+        .container { width: 95%; max-width: 600px; padding: 20px; }
+        .word-section { margin-bottom: 30px; }
+        .section-header { font-size: 1.2rem; margin: 15px 0; color: var(--primary); font-weight: bold; }
+
+        .word-card {
+            background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .char-row { display: flex; align-items: center; gap: 20px; }
+        .big-char { font-size: 60px; color: var(--primary); cursor: pointer; }
+        
+        .vocab-list { display: flex; flex-direction: column; gap: 8px; }
+        .vocab-item { font-size: 1.1rem; line-height: 1.4; color: #444; }
+        .vocab-item span { color: #888; font-size: 0.9rem; margin-right: 5px; }
+
+        /* 遊戲模式樣式 */
+        #game-area { text-align: center; display: none; }
+        .quiz-card {
+            background: white; border-radius: 25px; padding: 30px;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.2); margin-top: 20px;
+        }
+        .question { font-size: 1.8rem; margin-bottom: 30px; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn {
+            background: #f1f2f6; border: 2px solid #dfe4ea;
+            padding: 15px; border-radius: 15px; font-size: 1.3rem;
+            cursor: pointer; transition: 0.2s;
+        }
+        .option-btn:hover { background: var(--secondary); color: white; }
+
+        .score-display { font-size: 1.2rem; margin-bottom: 10px; color: var(--success); font-weight: bold; }
+
+        .loading-spinner { color: #999; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button id="btn-learn" class="active" onclick="showTab('learn')">📖 學習模式</button>
+        <button id="btn-game" onclick="showTab('game')">🎮 挑戰遊戲</button>
+    </nav>
+
+    <div id="learn-tab" class="container">
+        <h2 id="today-date"></h2>
+        <div class="word-section" id="new-words-list">
+            <div class="section-header">⭐ 今日新單字</div>
+        </div>
+        <div class="word-section" id="review-words-list">
+            <div class="section-header">📚 複習單字</div>
+        </div>
+    </div>
+
+    <div id="game-tab" class="container" style="display:none;">
+        <div id="game-area">
+            <div class="score-display">獲得星星：<span id="stars">0</span> ⭐</div>
+            <div class="quiz-card" id="quiz-content">
+                <!-- 遊戲內容動態產生 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dailyWords = [];
+        let score = 0;
+        const synth = window.speechSynthesis;
+
+        // 初始化
+        async function init() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('today-date').innerText = `📅 ${today}`;
+
+            try {
+                const res = await fetch('schedule.json');
+                const schedule = await res.json();
+                dailyWords = schedule[today] || [];
+
+                if (dailyWords.length > 0) {
+                    renderLearning();
+                } else {
+                    document.body.innerHTML += "<h1>今天沒有安排課程喔！</h1>";
+                }
+            } catch (e) {
+                alert("找不到 schedule.json 檔案！");
+            }
+        }
+
+        // 切換分頁
+        function showTab(tab) {
+            document.getElementById('learn-tab').style.display = tab === 'learn' ? 'block' : 'none';
+            document.getElementById('game-tab').style.display = tab === 'game' ? 'block' : 'none';
+            document.getElementById('btn-learn').classList.toggle('active', tab === 'learn');
+            document.getElementById('btn-game').classList.toggle('active', tab === 'game');
+            if(tab === 'game') startNewQuiz();
+        }
+
+        // 從萌典 API 抓取語詞
+        async function fetchVocab(char) {
+            try {
+                const res = await fetch(`https://www.moedict.tw/api/v2/index/${char}`);
+                const data = await res.json();
+                // 過濾並分類語詞
+                const allVocabs = data.relates || [];
+                const v2 = allVocabs.filter(v => v.length === 2).slice(0, 3);
+                const v3 = allVocabs.filter(v => v.length === 3).slice(0, 1);
+                const v4 = allVocabs.filter(v => v.length >= 4).slice(0, 1);
+                return { v2, v3, v4 };
+            } catch (e) {
+                return { v2: [], v3: [], v4: [] };
+            }
+        }
+
+        // 渲染學習卡片
+        async function renderLearning() {
+            for (let i = 0; i < dailyWords.length; i++) {
+                const char = dailyWords[i];
+                const isNew = i < 2;
+                const targetList = document.getElementById(isNew ? 'new-words-list' : 'review-words-list');
+                
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.innerHTML = `<div class="loading-spinner">正在幫 ${char} 找語詞...</div>`;
+                targetList.appendChild(card);
+
+                // 非同步獲取語詞
+                const vocabs = await fetchVocab(char);
+                
+                card.innerHTML = `
+                    <div class="char-row">
+                        <div class="big-char" onclick="speak('${char}')">${char}</div>
+                        <div class="vocab-list">
+                            ${vocabs.v2.map(v => `<div class="vocab-item" onclick="speak('${v}')"><span>●</span>${v}</div>`).join('')}
+                            ${vocabs.v3.map(v => `<div class="vocab-item" onclick="speak('${v}')"><span>●</span>${v}</div>`).join('')}
+                            ${vocabs.v4.map(v => `<div class="vocab-item" onclick="speak('${v}')"><span>●</span>${v}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 遊戲邏輯：造詞大王
+        async function startNewQuiz() {
+            const quizContainer = document.getElementById('quiz-content');
+            quizContainer.innerHTML = "🎲 題目產生中...";
+
+            // 隨機選一個今天的字
+            const correctChar = dailyWords[Math.floor(Math.random() * dailyWords.length)];
+            const vocabs = await fetchVocab(correctChar);
+            const allOptions = [vocabs.v2, vocabs.v3, vocabs.v4].flat();
+
+            if (allOptions.length === 0) { // 如果這個字沒語詞，再試一次
+                startNewQuiz();
+                return;
+            }
+
+            const targetVocab = allOptions[Math.floor(Math.random() * allOptions.length)];
+            const questionText = targetVocab.replace(correctChar, "（ ？ ）");
+
+            // 準備干擾選項
+            let distractors = dailyWords.filter(c => c !== correctChar)
+                                      .sort(() => 0.5 - Math.random())
+                                      .slice(0, 3);
+            
+            const finalOptions = [correctChar, ...distractors].sort(() => 0.5 - Math.random());
+
+            quizContainer.innerHTML = `
+                <div class="question">哪個字可以組成：<br><b>${questionText}</b></div>
+                <div class="options">
+                    ${finalOptions.map(opt => `
+                        <button class="option-btn" onclick="checkAnswer('${opt}', '${correctChar}')">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                score += 1;
+                document.getElementById('stars').innerText = score;
+                speak("答對了！你真棒");
+                alert("🎉 太聰明了！答對囉！");
+            } else {
+                speak("再試一次看看");
+                alert("❌ 哎呀，差一點點，再試一次！");
+            }
+            startNewQuiz();
+        }
+
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'zh-TW';
+            utter.rate = 0.8;
+            synth.speak(utter);
+        }
+
+        init();
+    </script>
+</body>
+</html>
