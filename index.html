@@ -6,28 +6,25 @@
     <title>女兒的中文探險</title>
     <style>
         :root { --p: #6c5ce7; --s: #a29bfe; --bg: #f9f9fb; }
-        body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; text-align: center; }
-        nav { background: white; padding: 15px; display: flex; justify-content: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        nav { background: white; padding: 12px; display: flex; justify-content: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         nav button { padding: 10px 20px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; background: #f1f2f6; color: #747d8c; }
         nav button.active { background: var(--p); color: white; }
         
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
-        .word-card { background: white; border-radius: 25px; padding: 30px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: left; position: relative; }
-        .big-char { font-size: 100px; color: var(--p); cursor: pointer; font-weight: bold; text-align: center; display: block; line-height: 1; margin: 10px 0; }
+        .word-card { background: white; border-radius: 25px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); text-align: left; position: relative; }
+        .big-char { font-size: 90px; color: var(--p); cursor: pointer; font-weight: bold; text-align: center; display: block; line-height: 1.1; margin: 15px 0; }
         
-        .vocab-list { margin-top: 20px; border-top: 1px dashed #eee; padding-top: 15px; }
-        .vocab-item { font-size: 1.4rem; margin: 12px 0; color: #2d3436; cursor: pointer; display: flex; align-items: center; transition: 0.2s; }
-        .vocab-item:hover { color: var(--p); transform: translateX(5px); }
-        .vocab-item:before { content: "🍭"; margin-right: 10px; font-size: 1rem; }
+        .vocab-list { margin-top: 15px; border-top: 1px dashed #eee; padding-top: 15px; min-height: 50px; }
+        .vocab-item { font-size: 1.3rem; margin: 10px 0; color: #2d3436; cursor: pointer; display: flex; align-items: center; }
+        .vocab-item:before { content: "🎈"; margin-right: 10px; font-size: 1rem; }
         
-        .tag { padding: 5px 15px; border-radius: 12px; color: white; font-size: 0.9rem; position: absolute; top: 20px; left: 20px; font-weight: bold; }
+        .tag { padding: 5px 12px; border-radius: 10px; color: white; font-size: 0.8rem; position: absolute; top: 15px; left: 15px; font-weight: bold; }
         
         #game-tab { display: none; }
-        .quiz-card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(108, 92, 231, 0.1); }
-        .opt-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 1.8rem; border: 2px solid #f1f2f6; border-radius: 15px; background: white; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .opt-btn:hover { background: #f1f2ff; border-color: var(--s); }
+        .opt-btn { width: 100%; padding: 18px; margin: 10px 0; font-size: 1.8rem; border: 2px solid #f1f2f6; border-radius: 15px; background: white; cursor: pointer; font-weight: bold; }
 
-        .loading-spinner { color: #a4b0be; font-size: 1rem; font-style: italic; text-align: center; }
+        .retry-btn { padding: 5px 10px; font-size: 0.8rem; background: #eee; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -38,16 +35,14 @@
 </nav>
 
 <div class="container">
-    <h2 id="date-info" style="color:#57606f; margin-bottom:20px;">資料準備中...</h2>
-
+    <h2 id="date-info" style="color:#57606f; text-align:center;">連線中...</h2>
     <div id="learn-tab">
-        <div id="word-list" class="loading-spinner">✨ 正在從雲端辭典尋找好聽的語詞...</div>
+        <div id="word-list" style="color:#a4b0be; text-align:center; margin-top:50px;">正在努力搬運語詞中...</div>
     </div>
-
     <div id="game-tab">
-        <div class="quiz-card">
-            <div id="score" style="font-size: 1.2rem; color: #ffa502; font-weight: bold; margin-bottom: 10px;">獲得星星：0 ⭐</div>
-            <div id="q-text" style="font-size: 2rem; margin: 30px 0; min-height: 80px;"></div>
+        <div style="background: white; padding: 30px; border-radius: 25px; text-align: center;">
+            <div id="score" style="font-size: 1.1rem; color: #ffa502; font-weight: bold;">收集星星：0 ⭐</div>
+            <div id="q-text" style="font-size: 2rem; margin: 25px 0;"></div>
             <div id="q-options"></div>
         </div>
     </div>
@@ -57,81 +52,119 @@
     const synth = window.speechSynthesis;
     let score = 0;
     let currentDayWords = [];
-    let vocabCache = {}; // 暫存抓過的語詞，讓遊戲模式更快
+    let vocabCache = {};
 
     async function init() {
         try {
-            const response = await fetch('schedule.json?v=' + Date.now());
+            const response = await fetch('schedule.json?t=' + Date.now());
             const scheduleData = await response.json();
             const today = new Date().toISOString().split('T')[0];
-            
-            // 抓取今天的單字
             const dateKey = scheduleData[today] ? today : Object.keys(scheduleData)[0];
             currentDayWords = scheduleData[dateKey];
-            document.getElementById('date-info').innerText = "📅 " + dateKey + " 練習";
-            
-            renderLearn();
+            document.getElementById('date-info').innerText = "📅 " + dateKey;
+            renderAllCards();
         } catch (e) {
-            document.getElementById('word-list').innerHTML = "❌ 讀取 schedule.json 失敗，請檢查檔案名稱。";
+            document.getElementById('word-list').innerHTML = "❌ 無法讀取 schedule.json，請檢查檔名。";
         }
     }
 
-    // 關鍵修正：使用 AllOrigins 代理並解析 JSON
+    // 核心連線邏輯：嘗試多種方式獲取資料
     async function fetchVocab(char) {
         if (vocabCache[char]) return vocabCache[char];
+
+        const tryFetch = async (url) => {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            // 處理 allorigins 的特殊格式
+            const finalData = data.contents ? JSON.parse(data.contents) : data;
+            return finalData.relates || [];
+        };
+
+        const charEncoded = encodeURIComponent(char);
+        const moedictUrl = `https://www.moedict.tw/api/v2/index/${charEncoded}`;
         
-        try {
-            const url = `https://www.moedict.tw/api/v2/index/${encodeURIComponent(char)}`;
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-            
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
-            const moedictData = JSON.parse(data.contents);
-            
-            const list = moedictData.relates || [];
-            
-            const result = {
-                v2: list.filter(v => v.length === 2).slice(0, 3),
-                v3: list.filter(v => v.length === 3).slice(0, 1),
-                v4: list.filter(v => v.length >= 4).slice(0, 1)
-            };
-            
-            // 如果 API 真的沒東西，才給予有意義的備案
-            if (result.v2.length === 0) result.v2 = [char + "天", "大" + char];
-            
-            vocabCache[char] = result;
-            return result;
-        } catch (e) {
-            console.error("Fetch Error:", e);
-            return { v2: [char + "子"], v3: [], v4: [] };
+        // 嘗試列表：1. 直接連 2. Proxy A 3. Proxy B
+        const attempts = [
+            moedictUrl,
+            `https://api.allorigins.win/get?url=${encodeURIComponent(moedictUrl)}`,
+            `https://corsproxy.io/?${encodeURIComponent(moedictUrl)}`
+        ];
+
+        for (let url of attempts) {
+            try {
+                const list = await tryFetch(url);
+                if (list.length > 0) {
+                    const result = {
+                        v2: list.filter(v => v.length === 2).slice(0, 3),
+                        v3: list.filter(v => v.length === 3).slice(0, 1),
+                        v4: list.filter(v => v.length >= 4).slice(0, 1)
+                    };
+                    vocabCache[char] = result;
+                    return result;
+                }
+            } catch (e) { continue; }
+        }
+
+        // 如果全部失敗，啟動「智慧造詞備案」，不再出現 XX子
+        return getSmartFallback(char);
+    }
+
+    function getSmartFallback(char) {
+        // 針對常見字根的智慧組合
+        const common = {
+            "嫩": ["嫩綠", "嫩葉", "嬌嫩"],
+            "猴": ["猴子", "小猴", "耍猴戲"],
+            "披": ["披風", "披上", "披星戴月"],
+            "信": ["寫信", "信心", "信用"],
+            "實": ["誠實", "果實", "實驗"],
+            "鐵": ["鐵路", "鋼鐵", "鐵門"],
+            "利": ["利息", "便利", "勝利"],
+            "康": ["健康", "康復", "安康"]
+        };
+        return { 
+            v2: common[char] || [char + "天", "大" + char, char + "色"], 
+            v3: [], 
+            v4: [] 
+        };
+    }
+
+    async function renderAllCards() {
+        const container = document.getElementById('word-list');
+        container.innerHTML = "";
+        
+        for (let i = 0; i < currentDayWords.length; i++) {
+            const char = currentDayWords[i];
+            const cardId = `card-${i}`;
+            const isNew = i < 2;
+
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.innerHTML = `
+                <span class="tag" style="background:${isNew ? '#ff7675':'#55efc4'}">${isNew ? '✨ 新挑戰' : '🔄 溫習'}</span>
+                <div class="big-char" onclick="speak('${char}')">${char}</div>
+                <div class="vocab-list" id="${cardId}">
+                    <span style="color:#ccc; font-size:0.9rem;">正在找好詞...</span>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // 非同步加載語詞，不卡住畫面
+            updateCardVocab(char, cardId);
         }
     }
 
-    async function renderLearn() {
-        const container = document.getElementById('word-list');
-        let html = "";
-
-        // 改成逐個載入，避免一次請求過多被封鎖
-        for (let i = 0; i < currentDayWords.length; i++) {
-            const char = currentDayWords[i];
-            const isNew = i < 2;
-            const voc = await fetchVocab(char);
-
-            html += `
-                <div class="word-card">
-                    <span class="tag" style="background:${isNew ? '#ff7675':'#55efc4'}">${isNew ? '今日新詞':'複習'}</span>
-                    <div class="big-char" onclick="speak('${char}')">${char}</div>
-                    <div class="vocab-list">
-                        ${voc.v2.map(v => `<div class="vocab-item" onclick="speak('${v}')">${v}</div>`).join('')}
-                        ${voc.v3.map(v => `<div class="vocab-item" onclick="speak('${v}')">${v}</div>`).join('')}
-                        ${voc.v4.map(v => `<div class="vocab-item" onclick="speak('${v}')">${v}</div>`).join('')}
-                    </div>
-                </div>
-            `;
-            // 每抓完一個就更新一次畫面，女兒就不會等太久
-            container.innerHTML = html + "<p class='loading-spinner'>正在準備後面的單字...</p>";
+    async function updateCardVocab(char, elementId) {
+        const voc = await fetchVocab(char);
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        
+        const all = [...voc.v2, ...voc.v3, ...voc.v4];
+        if (all.length > 0) {
+            el.innerHTML = all.map(v => `<div class="vocab-item" onclick="speak('${v}')">${v}</div>`).join('');
+        } else {
+            el.innerHTML = `<div class="vocab-item" onclick="speak('${char}天')">${char}天</div>`;
         }
-        container.innerHTML = html;
     }
 
     function showTab(tab) {
@@ -145,7 +178,7 @@
     async function initGame() {
         const qText = document.getElementById('q-text');
         const qOpts = document.getElementById('q-options');
-        qText.innerText = "🎲 題目正在飛過來...";
+        qText.innerText = "🎲 準備中...";
         qOpts.innerHTML = "";
 
         const correctChar = currentDayWords[Math.floor(Math.random() * currentDayWords.length)];
@@ -155,7 +188,7 @@
         if(allVoc.length === 0) { initGame(); return; }
 
         const target = allVoc[Math.floor(Math.random() * allVoc.length)];
-        qText.innerHTML = `這個字可以組成：<br><b style="font-size:3rem; color:var(--p);">${target.replace(correctChar, " □ ")}</b>`;
+        qText.innerHTML = `這個字可以組成：<br><b style="font-size:2.8rem; color:var(--p);">${target.replace(correctChar, " □ ")}</b>`;
 
         let options = [correctChar];
         while(options.length < 4) {
@@ -171,8 +204,8 @@
             btn.onclick = () => {
                 if(opt === correctChar) {
                     score++;
-                    document.getElementById('score').innerText = "獲得星星：" + score + " ⭐";
-                    speak("答對了，妳真棒！");
+                    document.getElementById('score').innerText = "收集星星：" + score + " ⭐";
+                    speak("答對了");
                     initGame();
                 } else {
                     speak("再試一次");
