@@ -14,47 +14,48 @@
 
     :root {
       color-scheme: light;
-      --ink: #1f2933;
-      --muted: #64748b;
-      --paper: #fffaf0;
-      --panel: #ffffff;
-      --line: #d9e2ec;
-      --green: #3a7d44;
-      --teal: #177e89;
-      --gold: #d99b24;
-      --rose: #c44d58;
-      --blue: #2f6690;
-      --shadow: 0 12px 32px rgba(31, 41, 51, .14);
+      --ink:        #1f2933;
+      --muted:      #64748b;
+      --paper:      #f0fdf9;
+      --panel:      #ffffff;
+      --line:       #d9e2ec;
+      --green:      #16a34a;
+      --green-lt:   #dcfce7;
+      --teal:       #177e89;
+      --teal-dk:    #0e6b74;
+      --teal-lt:    #ccfbf1;
+      --gold:       #d97706;
+      --gold-lt:    #fef3c7;
+      --rose:       #e11d48;
+      --rose-lt:    #ffe4e6;
+      --blue:       #2563eb;
+      --purple:     #7c3aed;
+      --shadow:     0 10px 28px rgba(31,41,51,.13);
+      --shadow-sm:  0 2px 8px  rgba(31,41,51,.08);
+      --r:          14px;
+      --r-sm:       10px;
     }
 
     * { box-sizing: border-box; }
-
     [hidden] { display: none !important; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+      font-family: "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;
       color: var(--ink);
       background:
-        linear-gradient(180deg, rgba(255, 250, 240, .92), rgba(236, 249, 245, .96)),
-        radial-gradient(circle at top left, rgba(217, 155, 36, .16), transparent 34rem);
+        linear-gradient(160deg, #ecfdf5 0%, #f0f9ff 50%, #fefce8 100%);
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; color: inherit; }
 
-    button {
-      border: 0;
-      cursor: pointer;
-      color: inherit;
-    }
-
+    /* ─── Layout ─────────────────────────────────────── */
     .app {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1200px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 24px 0 36px;
+      padding: 20px 0 40px;
     }
 
     header {
@@ -62,43 +63,55 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #ffffff, #f0fdf9);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(1.6rem, 3vw, 2.8rem);
-      letter-spacing: 0;
+      font-size: clamp(1.5rem, 3vw, 2.6rem);
+      background: linear-gradient(135deg, var(--teal), var(--teal-dk));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .subtitle {
-      margin: 5px 0 0;
+      margin: 4px 0 0;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: .95rem;
     }
 
     .coins {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 14px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
+      padding: 12px 18px;
+      background: linear-gradient(135deg, var(--gold-lt), #fde68a);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
       font-weight: 800;
+      font-size: 1.05rem;
       white-space: nowrap;
     }
 
     .coin {
-      width: 32px;
+      width: 34px;
       aspect-ratio: 1;
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: #f7c948;
+      background: radial-gradient(circle at 35% 35%, #fde68a, #f59e0b);
       color: #614700;
-      border: 3px solid #d99b24;
+      border: 3px solid var(--gold);
+      font-size: .9rem;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(217,119,6,.3);
     }
 
     main {
@@ -108,20 +121,18 @@
       align-items: start;
     }
 
+    /* ─── View switching ──────────────────────────────── */
     body[data-view="practice"] .pet-panel,
     body[data-view="pet"] .practice,
     body[data-view="pet"] .history,
     body[data-view="challenge"] .pet-panel,
     body[data-view="challenge"] .daily-card,
-    body[data-view="challenge"] .mode-row {
-      display: none;
-    }
+    body[data-view="challenge"] .mode-row { display: none; }
 
     body[data-view="practice"] .challenge-tabs,
-    body[data-view="pet"] .challenge-tabs {
-      display: none;
-    }
+    body[data-view="pet"] .challenge-tabs { display: none; }
 
+    /* ─── App tabs ────────────────────────────────────── */
     .app-tabs {
       display: flex;
       gap: 8px;
@@ -129,40 +140,44 @@
       margin-bottom: 18px;
     }
 
-    .view-tab, .shop-tab {
-      min-height: 42px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+    .view-tab {
+      min-height: 44px;
+      padding: 10px 18px;
+      border: 2px solid var(--line);
+      border-radius: var(--r-sm);
       background: #f8fafc;
       font-weight: 800;
+      transition: all .18s;
     }
 
-    .view-tab.active, .shop-tab.active {
-      background: #ddf4ef;
-      border-color: var(--teal);
-      color: #0f5e66;
+    .view-tab:hover { border-color: var(--teal); }
+
+    .view-tab.active {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dk));
+      border-color: var(--teal-dk);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(23,126,137,.35);
     }
 
+    /* ─── Sections ────────────────────────────────────── */
     section, aside {
-      background: rgba(255, 255, 255, .9);
+      background: rgba(255,255,255,.92);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--r);
       box-shadow: var(--shadow);
     }
 
-    .practice {
-      padding: 18px;
-    }
+    /* ─── Practice section ────────────────────────────── */
+    .practice { padding: 18px; }
 
     .review-gate {
       display: grid;
       gap: 12px;
       margin-bottom: 16px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
+      padding: 16px;
+      border: 2px solid var(--teal-lt);
+      border-radius: var(--r);
+      background: linear-gradient(135deg, #fff, var(--teal-lt));
     }
 
     .review-top {
@@ -180,7 +195,7 @@
       gap: 18px;
       padding: 18px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       background: linear-gradient(135deg, #ffffff, #f6fbff);
     }
 
@@ -188,50 +203,30 @@
       display: grid;
       place-items: center;
       min-height: 150px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #f8fafc;
+      border: 2px solid var(--teal-lt);
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #f8fafc, #e0f7fa);
       font-size: 5rem;
       font-weight: 900;
     }
 
     .zhuyin-text {
-      font-family: 'ToneOZZhuyin', "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
-      letter-spacing: 0;
+      font-family: 'ToneOZZhuyin',"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;
     }
 
     .phrase-word {
-      font-family: 'ToneOZZhuyin', "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+      font-family: 'ToneOZZhuyin',"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;
       font-size: 1.18em;
       font-weight: 900;
       margin-right: 4px;
     }
 
-    .study-fields {
-      display: grid;
-      gap: 8px;
-      font-weight: 800;
-    }
+    .study-fields { display: grid; gap: 8px; font-weight: 800; }
+    .study-line span { color: var(--muted); margin-right: 6px; }
 
-    .study-line span {
-      color: var(--muted);
-      margin-right: 6px;
-    }
-
-    .phrase-group {
-      margin-top: 8px;
-    }
-
-    .phrase-group h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      color: var(--blue);
-    }
-
-    .phrase-group ul {
-      margin: 0;
-      padding-left: 20px;
-    }
+    .phrase-group { margin-top: 8px; }
+    .phrase-group h3 { margin: 0 0 6px; font-size: 1rem; color: var(--blue); }
+    .phrase-group ul { margin: 0; padding-left: 20px; }
 
     .review-actions {
       display: flex;
@@ -240,50 +235,51 @@
       flex-wrap: wrap;
     }
 
-    .mode-row {
+    /* ─── Mode / challenge tabs ───────────────────────── */
+    .mode-row, .challenge-tabs {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 14px;
     }
 
-    .challenge-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .mode, .challenge-tab {
+    .mode, .challenge-tab, .shop-tab {
       min-height: 42px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      padding: 8px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--r-sm);
       background: #f8fafc;
+      font-weight: 700;
+      transition: all .15s;
     }
+
+    .mode:hover, .challenge-tab:hover { border-color: var(--teal); }
 
     .mode.active, .challenge-tab.active {
-      background: #ddf4ef;
+      background: linear-gradient(135deg, var(--teal-lt), #d4f4f0);
       border-color: var(--teal);
-      color: #0f5e66;
+      color: var(--teal-dk);
       font-weight: 800;
     }
 
+    /* ─── Question area ───────────────────────────────── */
     .question {
       min-height: 260px;
       display: grid;
       place-items: center;
       text-align: center;
       background: linear-gradient(135deg, #eff8f4, #fff8e8);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 22px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--r);
+      padding: 24px;
+      box-shadow: inset 0 2px 10px rgba(31,41,51,.05);
     }
 
     .prompt-label {
       color: var(--muted);
       margin-bottom: 10px;
       font-weight: 700;
+      font-size: 1rem;
     }
 
     .big-char {
@@ -299,6 +295,7 @@
       font-weight: 800;
     }
 
+    /* ─── Answers ─────────────────────────────────────── */
     .answers {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -307,38 +304,87 @@
     }
 
     .answer {
-      min-height: 66px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
+      min-height: 72px;
+      padding: 12px;
+      border-radius: var(--r-sm);
+      border: 2px solid var(--line);
       background: #ffffff;
-      font-size: clamp(1.05rem, 2.8vw, 1.45rem);
+      font-size: clamp(1.05rem, 2.8vw, 1.4rem);
       font-weight: 800;
-      transition: transform .15s, border-color .15s, background .15s;
+      transition: transform .14s, border-color .14s, background .14s, box-shadow .14s;
     }
 
-    .answer:hover {
-      transform: translateY(-1px);
+    .answer:hover:not(:disabled) {
+      transform: translateY(-3px);
       border-color: var(--teal);
+      box-shadow: 0 6px 16px rgba(23,126,137,.18);
     }
 
     .answer.correct {
-      background: #d9f8e6;
+      background: var(--green-lt);
       border-color: var(--green);
+      animation: correctPop .4s ease;
     }
 
     .answer.wrong {
-      background: #ffe3e3;
+      background: var(--rose-lt);
       border-color: var(--rose);
     }
 
-    .feedback {
-      min-height: 38px;
-      margin-top: 12px;
-      font-weight: 800;
-      color: var(--teal);
+    @keyframes correctPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.07); }
+      100% { transform: scale(1); }
     }
 
+    /* ─── Feedback ────────────────────────────────────── */
+    .feedback-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      min-height: 48px;
+    }
+
+    #feedback {
+      flex: 1;
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--teal-dk);
+      transition: background .2s, color .2s;
+    }
+
+    #feedback.fb-correct {
+      background: var(--green-lt);
+      color: var(--green);
+    }
+
+    #feedback.fb-wrong {
+      background: var(--rose-lt);
+      color: var(--rose);
+    }
+
+    #streakDisplay {
+      white-space: nowrap;
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 60px;
+      text-align: center;
+      display: inline-block;
+    }
+
+    #streakDisplay.pop { animation: streakPop .28s ease; }
+
+    @keyframes streakPop {
+      0%,100% { transform: scale(1); }
+      45%     { transform: scale(1.55); }
+    }
+
+    /* ─── Timer ───────────────────────────────────────── */
     .timer-row {
       display: flex;
       align-items: center;
@@ -354,10 +400,12 @@
       padding: 5px 9px;
       border-radius: 999px;
       background: #fff;
-      border: 1px solid var(--line);
+      border: 2px solid var(--rose);
       color: var(--rose);
+      font-weight: 900;
     }
 
+    /* ─── Sentence / blank ────────────────────────────── */
     .sentence {
       font-size: clamp(1.7rem, 5vw, 3.6rem);
       line-height: 1.35;
@@ -373,46 +421,60 @@
       color: transparent;
     }
 
+    /* ─── Bubble arena ────────────────────────────────── */
     .bubble-arena {
       display: none;
       position: relative;
-      min-height: 285px;
+      min-height: 300px;
       margin-top: 14px;
       overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: linear-gradient(180deg, #e8f7ff, #fff8df);
+      border: 1.5px solid var(--line);
+      border-radius: var(--r);
+      background: linear-gradient(180deg, #bae6fd 0%, #ecfdf5 60%, #fef9c3 100%);
     }
 
-    .bubble-arena.show {
-      display: block;
-    }
+    .bubble-arena.show { display: block; }
 
     .bubble {
       position: absolute;
-      width: 76px;
+      width: 80px;
       aspect-ratio: 1;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .78);
-      border: 3px solid rgba(23, 126, 137, .45);
-      box-shadow: inset 0 -10px 18px rgba(47, 102, 144, .12), 0 8px 16px rgba(31, 41, 51, .12);
+      border: 3px solid transparent;
+      box-shadow: inset 0 -10px 18px rgba(0,0,0,.1), 0 8px 16px rgba(31,41,51,.12);
       display: grid;
       place-items: center;
       font-size: 2.1rem;
       font-weight: 900;
-      animation: floatUp 6s linear forwards;
+      animation: floatUp linear forwards;
+      cursor: pointer;
+      transition: transform .1s;
+    }
+
+    .bubble:hover { transform: scale(1.12) !important; }
+
+    .bubble.burst {
+      animation: bubbleBurst .25s ease forwards !important;
+      pointer-events: none;
     }
 
     @keyframes floatUp {
-      from { transform: translateY(290px); opacity: 1; }
-      to { transform: translateY(-110px); opacity: .78; }
+      from { transform: translateY(310px) scale(1); opacity: 1; }
+      to   { transform: translateY(-120px) scale(.9); opacity: .7; }
     }
 
+    @keyframes bubbleBurst {
+      0%   { transform: scale(1); opacity: 1; }
+      55%  { transform: scale(1.7); opacity: .7; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    /* ─── Daily card ──────────────────────────────────── */
     .daily-card {
       margin-top: 16px;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      padding: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--r-sm);
       background: #ffffff;
     }
 
@@ -436,104 +498,139 @@
 
     .date-input {
       min-height: 38px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--r-sm);
       padding: 7px 9px;
       background: #fff;
       color: var(--ink);
       font-weight: 800;
     }
 
-    .word-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .word-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
     .word-chip {
       padding: 7px 10px;
-      border-radius: 8px;
-      background: #f8fafc;
-      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #f8fafc, #e0f7fa);
+      border: 1px solid var(--teal-lt);
       font-weight: 900;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
     }
 
-    .character-list {
-      margin-top: 16px;
-    }
-
-    .character-list label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 92px;
-      resize: vertical;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px;
-      background: #fff;
-      color: var(--ink);
-    }
-
+    /* ─── Buttons ─────────────────────────────────────── */
     .small-button {
       min-height: 38px;
-      padding: 7px 11px;
-      border-radius: 8px;
-      background: var(--ink);
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--ink), #374151);
       color: white;
       font-weight: 800;
       white-space: nowrap;
+      transition: transform .13s, box-shadow .13s;
     }
 
+    .small-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(31,41,51,.25);
+    }
+
+    /* ─── Pet panel ───────────────────────────────────── */
     .pet-panel {
       overflow: hidden;
-    }
-
-    .pet-panel {
       max-width: 980px;
       margin: 0 auto;
       width: 100%;
     }
 
+    /* ─── Yard ────────────────────────────────────────── */
     .yard {
-      min-height: 310px;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
       display: grid;
       place-items: center;
-      padding: 18px;
-      background:
-        linear-gradient(180deg, #d8f3dc 0 58%, #c9a66b 58% 100%);
+    }
+
+    .yard-sky {
+      position: absolute;
+      inset: 0 0 42% 0;
+      background: linear-gradient(180deg, #7dd3fc, #bae6fd 70%, #d4f0ff);
+    }
+
+    .yard-ground {
+      position: absolute;
+      inset: 58% 0 0 0;
+      background: linear-gradient(180deg, #4ade80 0%, #22c55e 18%, #c9a66b 18%);
+    }
+
+    .sun {
+      position: absolute;
+      top: 16px;
+      right: 50px;
+      width: 52px;
+      height: 52px;
+      background: radial-gradient(circle at 38% 38%, #fef08a, #fbbf24);
+      border-radius: 50%;
+      box-shadow: 0 0 0 10px rgba(251,191,36,.18), 0 0 30px rgba(251,191,36,.4);
+      animation: sunPulse 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes sunPulse {
+      0%,100% { box-shadow: 0 0 0 10px rgba(251,191,36,.18), 0 0 30px rgba(251,191,36,.4); }
+      50%     { box-shadow: 0 0 0 16px rgba(251,191,36,.25), 0 0 50px rgba(251,191,36,.55); }
+    }
+
+    .cloud {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .cloud-shape {
+      background: rgba(255,255,255,.85);
+      border-radius: 50px;
       position: relative;
     }
 
+    .cloud-shape::before,
+    .cloud-shape::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    @keyframes cloudDrift1 {
+      from { transform: translateX(-220px); }
+      to   { transform: translateX(calc(100vw + 220px)); }
+    }
+
+    @keyframes cloudDrift2 {
+      from { transform: translateX(calc(100vw + 220px)); }
+      to   { transform: translateX(-220px); }
+    }
+
+    /* ─── Pet character ───────────────────────────────── */
     .pet {
       width: 230px;
       height: 310px;
       position: relative;
+      z-index: 2;
       transform-origin: bottom center;
       animation: bounce 2.3s ease-in-out infinite;
-      filter: drop-shadow(0 15px 15px rgba(31, 41, 51, .22));
+      filter: drop-shadow(0 18px 18px rgba(31,41,51,.22));
     }
 
     @keyframes bounce {
-      0%, 100% { transform: translateY(0) rotate(-1deg); }
-      50% { transform: translateY(-8px) rotate(1deg); }
+      0%,100% { transform: translateY(0) rotate(-1deg); }
+      50%     { transform: translateY(-10px) rotate(1deg); }
     }
 
     .pet-body {
       position: absolute;
-      left: 54px;
-      top: 138px;
-      width: 122px;
-      height: 118px;
+      left: 54px; top: 138px;
+      width: 122px; height: 118px;
       border-radius: 45% 45% 38% 38%;
       background: #f4a261;
       border: 5px solid #9a5f36;
@@ -541,10 +638,8 @@
 
     .pet-head {
       position: absolute;
-      left: 45px;
-      top: 44px;
-      width: 140px;
-      height: 124px;
+      left: 45px; top: 44px;
+      width: 140px; height: 124px;
       border-radius: 48% 48% 42% 42%;
       background: #f4a261;
       border: 5px solid #9a5f36;
@@ -554,15 +649,14 @@
     .ear {
       position: absolute;
       top: 28px;
-      width: 54px;
-      height: 72px;
+      width: 54px; height: 72px;
       background: #f4a261;
       border: 5px solid #9a5f36;
       border-radius: 60% 60% 25% 25%;
       z-index: 1;
     }
 
-    .ear.left { left: 40px; transform: rotate(-24deg); }
+    .ear.left  { left: 40px;  transform: rotate(-24deg); }
     .ear.right { right: 40px; transform: rotate(24deg); }
 
     .arm, .leg, .foot {
@@ -574,53 +668,48 @@
 
     .arm {
       top: 160px;
-      width: 42px;
-      height: 86px;
+      width: 42px; height: 86px;
       border-radius: 999px;
     }
 
-    .arm.left { left: 28px; transform: rotate(18deg); }
+    .arm.left  { left: 28px;  transform: rotate(18deg); }
     .arm.right { right: 28px; transform: rotate(-18deg); }
 
     .leg {
       top: 232px;
-      width: 42px;
-      height: 56px;
+      width: 42px; height: 56px;
       border-radius: 999px;
     }
 
-    .leg.left { left: 72px; }
+    .leg.left  { left: 72px; }
     .leg.right { right: 72px; }
 
     .foot {
       top: 274px;
-      width: 58px;
-      height: 28px;
+      width: 58px; height: 28px;
       border-radius: 999px;
     }
 
-    .foot.left { left: 52px; }
+    .foot.left  { left: 52px; }
     .foot.right { right: 52px; }
 
     .eye {
       position: absolute;
       top: 91px;
-      width: 16px;
-      aspect-ratio: 1;
+      width: 16px; aspect-ratio: 1;
       border-radius: 50%;
       background: #1f2933;
       z-index: 3;
+      transition: all .4s;
     }
 
-    .eye.left { left: 83px; }
+    .eye.left  { left: 83px; }
     .eye.right { right: 83px; }
 
     .nose {
       position: absolute;
-      top: 121px;
-      left: 50%;
-      width: 24px;
-      height: 18px;
+      top: 121px; left: 50%;
+      width: 24px; height: 18px;
       border-radius: 50%;
       background: #51312b;
       transform: translateX(-50%);
@@ -629,16 +718,47 @@
 
     .mouth {
       position: absolute;
-      top: 141px;
       left: 50%;
-      width: 48px;
-      height: 24px;
-      border-bottom: 5px solid #51312b;
-      border-radius: 0 0 40px 40px;
       transform: translateX(-50%);
       z-index: 3;
+      transition: all .4s;
     }
 
+    /* Happy mouth (default) */
+    .pet .mouth {
+      top: 141px;
+      width: 48px; height: 24px;
+      border-bottom: 5px solid #51312b;
+      border-radius: 0 0 40px 40px;
+    }
+
+    /* Neutral mouth */
+    .pet.mood-neutral .mouth {
+      top: 148px;
+      height: 0;
+      width: 38px;
+      border-bottom: 5px solid #51312b;
+      border-radius: 0;
+    }
+
+    /* Sad mouth */
+    .pet.mood-sad .mouth {
+      top: 152px;
+      width: 40px; height: 18px;
+      border-bottom: none;
+      border-top: 5px solid #51312b;
+      border-radius: 40px 40px 0 0;
+    }
+
+    /* Sad eyes */
+    .pet.mood-sad .eye {
+      width: 14px;
+      height: 8px;
+      border-radius: 50% 50% 0 0;
+      top: 95px;
+    }
+
+    /* Accessory slots */
     .accessory {
       position: absolute;
       font-size: 2.2rem;
@@ -650,20 +770,17 @@
     .accessory.show { display: block; }
 
     .accessory-head {
-      left: 50%;
-      top: 18px;
+      left: 50%; top: 18px;
       transform: translateX(-50%);
     }
 
     .accessory-body {
-      left: 50%;
-      top: 170px;
+      left: 50%; top: 170px;
       transform: translateX(-50%);
     }
 
     .accessory-feet {
-      left: 50%;
-      top: 280px;
+      left: 50%; top: 280px;
       transform: translateX(-50%);
       width: 150px;
       text-align: center;
@@ -672,27 +789,76 @@
     }
 
     .accessory-toy {
-      right: 2px;
-      bottom: 14px;
+      right: 2px; bottom: 14px;
       font-size: 2.4rem;
     }
 
+    /* ─── Pet colour variants ─────────────────────────── */
+    .pet.pet-panda .pet-head,.pet.pet-panda .pet-body,
+    .pet.pet-panda .arm,.pet.pet-panda .leg,
+    .pet.pet-panda .foot,.pet.pet-panda .ear {
+      background: #f8fafc; border-color: #2f3a45;
+    }
+
+    .pet.pet-cat .pet-head,.pet.pet-cat .pet-body,
+    .pet.pet-cat .arm,.pet.pet-cat .leg,
+    .pet.pet-cat .foot,.pet.pet-cat .ear {
+      background: #f7c948; border-color: #8a6116;
+    }
+
+    .pet.pet-bunny .pet-head,.pet.pet-bunny .pet-body,
+    .pet.pet-bunny .arm,.pet.pet-bunny .leg,
+    .pet.pet-bunny .foot,.pet.pet-bunny .ear {
+      background: #f9c6d3; border-color: #a24a61;
+    }
+
+    .pet.pet-fox .pet-head,.pet.pet-fox .pet-body,
+    .pet.pet-fox .arm,.pet.pet-fox .leg,
+    .pet.pet-fox .foot,.pet.pet-fox .ear,
+    .pet.pet-tiger .pet-head,.pet.pet-tiger .pet-body,
+    .pet.pet-tiger .arm,.pet.pet-tiger .leg,
+    .pet.pet-tiger .foot,.pet.pet-tiger .ear {
+      background: #f97316; border-color: #8a3f12;
+    }
+
+    .pet.pet-bear .pet-head,.pet.pet-bear .pet-body,
+    .pet.pet-bear .arm,.pet.pet-bear .leg,
+    .pet.pet-bear .foot,.pet.pet-bear .ear,
+    .pet.pet-hamster .pet-head,.pet.pet-hamster .pet-body,
+    .pet.pet-hamster .arm,.pet.pet-hamster .leg,
+    .pet.pet-hamster .foot,.pet.pet-hamster .ear {
+      background: #b08968; border-color: #6b4930;
+    }
+
+    .pet.pet-koala .pet-head,.pet.pet-koala .pet-body,
+    .pet.pet-koala .arm,.pet.pet-koala .leg,
+    .pet.pet-koala .foot,.pet.pet-koala .ear {
+      background: #cbd5e1; border-color: #64748b;
+    }
+
+    .pet.pet-unicorn .pet-head,.pet.pet-unicorn .pet-body,
+    .pet.pet-unicorn .arm,.pet.pet-unicorn .leg,
+    .pet.pet-unicorn .foot,.pet.pet-unicorn .ear {
+      background: #d8b4fe; border-color: #7c3aed;
+    }
+
+    /* ─── Stats ───────────────────────────────────────── */
     .stats {
       padding: 14px;
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
 
     .stat {
       display: grid;
-      grid-template-columns: 82px 1fr 42px;
+      grid-template-columns: 82px 1fr 48px 22px;
       gap: 9px;
       align-items: center;
       font-weight: 800;
     }
 
     .bar {
-      height: 14px;
+      height: 16px;
       overflow: hidden;
       border-radius: 999px;
       background: #edf2f7;
@@ -701,17 +867,22 @@
 
     .fill {
       height: 100%;
-      width: 50%;
       border-radius: inherit;
-      background: var(--teal);
-      transition: width .25s;
+      transition: width .35s ease, background .5s;
     }
 
-    .shop {
-      padding: 0 14px 14px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
+    .fill.high { background: linear-gradient(90deg, #4ade80, #16a34a); }
+    .fill.mid  { background: linear-gradient(90deg, #fbbf24, #d97706); }
+    .fill.low  { background: linear-gradient(90deg, #f87171, #e11d48); }
+
+    .stat-emoji { text-align: center; font-size: 1rem; }
+
+    /* ─── Shop ────────────────────────────────────────── */
+    .shop-title {
+      padding: 14px 14px 8px;
+      margin: 0;
+      font-size: 1.2rem;
+      border-top: 1px solid var(--line);
     }
 
     .shop-tabs {
@@ -721,49 +892,100 @@
       padding: 0 14px 12px;
     }
 
-    .shop-title {
-      padding: 14px 14px 8px;
-      margin: 0;
-      font-size: 1.2rem;
-    }
-
-    .item {
-      min-height: 86px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #fff;
-      display: grid;
-      gap: 4px;
-      place-items: center;
-      padding: 10px 8px;
+    .shop-tab.active {
+      background: linear-gradient(135deg, var(--teal-lt), #d4f4f0);
+      border-color: var(--teal);
+      color: var(--teal-dk);
       font-weight: 800;
     }
 
-    .item:disabled {
-      opacity: .48;
-      cursor: not-allowed;
+    .shop {
+      padding: 0 14px 14px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .item {
+      position: relative;
+      min-height: 90px;
+      border-radius: var(--r-sm);
+      border: 2px solid var(--line);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 8px;
+      font-weight: 800;
+      transition: transform .14s, box-shadow .14s, border-color .14s;
+      cursor: pointer;
+    }
+
+    .item:hover:not(:disabled) {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(31,41,51,.14);
+      border-color: var(--teal);
+    }
+
+    .item:disabled { opacity: .55; cursor: not-allowed; }
+
+    .item-need {
+      font-size: .72rem;
+      color: var(--rose);
+      font-weight: 700;
     }
 
     .item.owned {
       border-color: var(--green);
-      background: #f0fff4;
+      background: var(--green-lt);
+    }
+
+    .item.owned::after {
+      content: '✓';
+      position: absolute;
+      top: 5px; right: 8px;
+      font-size: .75rem;
+      color: var(--green);
+      font-weight: 900;
     }
 
     .item.active {
-      outline: 3px solid rgba(23, 126, 137, .28);
       border-color: var(--teal);
+      background: linear-gradient(135deg, var(--teal-lt), #d4f4f0);
+      box-shadow: 0 0 0 3px rgba(23,126,137,.2);
     }
 
-    .item-icon {
-      font-size: 1.8rem;
-      line-height: 1;
-    }
+    .item-icon { font-size: 2rem; line-height: 1; }
 
     .price {
       color: var(--gold);
-      font-size: .92rem;
+      font-size: .88rem;
     }
 
+    .item-boost {
+      font-size: .78rem;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* ─── Shop earn-coins banner ─────────────────────── */
+    .shop-banner {
+      margin: 0 14px 12px;
+      padding: 12px 16px;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--gold-lt), #fde68a);
+      border: 1.5px solid var(--gold);
+      font-size: .95rem;
+      font-weight: 700;
+      color: #7c4700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ─── History / parent section ────────────────────── */
     .history {
       margin-top: 18px;
       padding: 14px;
@@ -772,15 +994,18 @@
       grid-column: 1 / -1;
     }
 
-    .history h2 {
-      margin: 0;
-      font-size: 1.15rem;
-    }
+    .history h2 { margin: 0; font-size: 1.15rem; }
 
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .badge {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+      color: #1e40af;
+      font-weight: 800;
+      border: 1px solid #bfdbfe;
+      font-size: .9rem;
     }
 
     .parent-grid {
@@ -790,147 +1015,68 @@
     }
 
     .parent-stat {
-      padding: 10px;
+      padding: 12px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #fff, #f8fafc);
     }
 
     .parent-stat strong {
       display: block;
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       margin-bottom: 2px;
+      color: var(--teal-dk);
     }
 
-    .history-list {
-      display: grid;
-      gap: 7px;
-    }
+    .history-list { display: grid; gap: 7px; }
 
     .history-row {
       display: grid;
       grid-template-columns: 1fr auto auto auto;
       gap: 10px;
       align-items: center;
-      padding: 8px 10px;
+      padding: 9px 12px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       background: #fff;
       font-weight: 800;
     }
 
-    .pet.pet-panda .pet-head,
-    .pet.pet-panda .pet-body,
-    .pet.pet-panda .arm,
-    .pet.pet-panda .leg,
-    .pet.pet-panda .foot,
-    .pet.pet-panda .ear {
-      background: #f8fafc;
-      border-color: #2f3a45;
+    /* ─── Confetti ────────────────────────────────────── */
+    .confetti-piece {
+      position: fixed;
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall ease-in forwards;
     }
 
-    .pet.pet-cat .pet-head,
-    .pet.pet-cat .pet-body,
-    .pet.pet-cat .arm,
-    .pet.pet-cat .leg,
-    .pet.pet-cat .foot,
-    .pet.pet-cat .ear {
-      background: #f7c948;
-      border-color: #8a6116;
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) translateX(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(90vh) rotate(720deg) translateX(var(--drift));
+      }
     }
 
-    .pet.pet-bunny .pet-head,
-    .pet.pet-bunny .pet-body,
-    .pet.pet-bunny .arm,
-    .pet.pet-bunny .leg,
-    .pet.pet-bunny .foot,
-    .pet.pet-bunny .ear {
-      background: #f9c6d3;
-      border-color: #a24a61;
-    }
-
-    .pet.pet-fox .pet-head,
-    .pet.pet-fox .pet-body,
-    .pet.pet-fox .arm,
-    .pet.pet-fox .leg,
-    .pet.pet-fox .foot,
-    .pet.pet-fox .ear,
-    .pet.pet-tiger .pet-head,
-    .pet.pet-tiger .pet-body,
-    .pet.pet-tiger .arm,
-    .pet.pet-tiger .leg,
-    .pet.pet-tiger .foot,
-    .pet.pet-tiger .ear {
-      background: #f97316;
-      border-color: #8a3f12;
-    }
-
-    .pet.pet-bear .pet-head,
-    .pet.pet-bear .pet-body,
-    .pet.pet-bear .arm,
-    .pet.pet-bear .leg,
-    .pet.pet-bear .foot,
-    .pet.pet-bear .ear,
-    .pet.pet-hamster .pet-head,
-    .pet.pet-hamster .pet-body,
-    .pet.pet-hamster .arm,
-    .pet.pet-hamster .leg,
-    .pet.pet-hamster .foot,
-    .pet.pet-hamster .ear {
-      background: #b08968;
-      border-color: #6b4930;
-    }
-
-    .pet.pet-koala .pet-head,
-    .pet.pet-koala .pet-body,
-    .pet.pet-koala .arm,
-    .pet.pet-koala .leg,
-    .pet.pet-koala .foot,
-    .pet.pet-koala .ear {
-      background: #cbd5e1;
-      border-color: #64748b;
-    }
-
-    .pet.pet-unicorn .pet-head,
-    .pet.pet-unicorn .pet-body,
-    .pet.pet-unicorn .arm,
-    .pet.pet-unicorn .leg,
-    .pet.pet-unicorn .foot,
-    .pet.pet-unicorn .ear {
-      background: #d8b4fe;
-      border-color: #7c3aed;
-    }
-
-    .badge {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #e8f4f8;
-      color: #1f5f78;
-      font-weight: 800;
-      border: 1px solid #c8e3ec;
-    }
-
+    /* ─── Responsive ──────────────────────────────────── */
     @media (max-width: 840px) {
-      header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      header { flex-direction: column; align-items: flex-start; }
+      main { grid-template-columns: 1fr; }
+      .answers, .shop { grid-template-columns: 1fr 1fr; }
+      .study-card { grid-template-columns: 1fr; }
+      .parent-grid { grid-template-columns: 1fr 1fr; }
+      .history-row { grid-template-columns: 1fr 1fr; }
+    }
 
-      main {
-        grid-template-columns: 1fr;
-      }
-
-      .answers, .shop {
-        grid-template-columns: 1fr;
-      }
-
-      .study-card {
-        grid-template-columns: 1fr;
-      }
-
-      .parent-grid, .history-row {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 480px) {
+      .answers { grid-template-columns: 1fr; }
+      .shop { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
   </style>
 </head>
@@ -938,8 +1084,8 @@
   <div class="app">
     <header>
       <div>
-        <h1>小寵物中文練習店</h1>
-        <p class="subtitle">答對中文題目賺錢，照顧自己的小寵物。</p>
+        <h1>🐾 小寵物中文練習店</h1>
+        <p class="subtitle">答對中文題目賺錢，照顧自己的小寵物！</p>
       </div>
       <div class="coins" aria-live="polite">
         <span class="coin">$</span>
@@ -948,9 +1094,9 @@
     </header>
 
     <nav class="app-tabs" aria-label="主要頁面">
-      <button class="view-tab active" data-view="practice">每日練習</button>
-      <button class="view-tab" data-view="challenge">中文挑戰</button>
-      <button class="view-tab" data-view="pet">寵物商店</button>
+      <button class="view-tab active" data-view="practice">📚 每日練習</button>
+      <button class="view-tab" data-view="challenge">⚡ 中文挑戰</button>
+      <button class="view-tab" data-view="pet">🛍️ 寵物商店</button>
     </nav>
 
     <main>
@@ -973,12 +1119,13 @@
             <button id="prevCard" class="small-button">上一張</button>
             <button id="nextCard" class="small-button">下一張</button>
             <button id="finishReview" class="small-button">我看完了，開始遊戲</button>
+            <button id="goChallenge" class="small-button" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">⚡ 先去挑戰！</button>
           </div>
         </div>
 
         <div class="challenge-tabs" aria-label="中文挑戰模式">
-          <button class="challenge-tab active" data-challenge="quick">快問快答</button>
-          <button class="challenge-tab" data-challenge="bubble">泡泡快打</button>
+          <button class="challenge-tab active" data-challenge="quick">⚡ 快問快答</button>
+          <button class="challenge-tab" data-challenge="bubble">🫧 泡泡快打</button>
         </div>
 
         <div class="mode-row" aria-label="練習模式" hidden>
@@ -998,7 +1145,11 @@
 
         <div id="answers" class="answers"></div>
         <div id="bubbleArena" class="bubble-arena" aria-label="泡泡快打"></div>
-        <div id="feedback" class="feedback" aria-live="polite"></div>
+
+        <div class="feedback-wrap">
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <div id="streakDisplay" title="連續答對"></div>
+        </div>
 
         <div class="daily-card">
           <div class="daily-top">
@@ -1014,6 +1165,26 @@
 
       <aside class="pet-panel" aria-label="寵物">
         <div class="yard">
+          <div class="yard-sky"></div>
+          <div class="yard-ground"></div>
+          <div class="sun"></div>
+
+          <!-- Cloud 1 -->
+          <div class="cloud" style="top:14px;left:0;animation:cloudDrift1 22s linear infinite;">
+            <div class="cloud-shape" style="width:80px;height:26px;top:0;left:0;">
+              <div style="position:absolute;width:38px;height:38px;border-radius:50%;background:inherit;top:-18px;left:10px;"></div>
+              <div style="position:absolute;width:26px;height:26px;border-radius:50%;background:inherit;top:-10px;left:38px;"></div>
+            </div>
+          </div>
+
+          <!-- Cloud 2 -->
+          <div class="cloud" style="top:38px;right:0;animation:cloudDrift2 30s linear infinite 8s;">
+            <div class="cloud-shape" style="width:100px;height:30px;top:0;left:0;">
+              <div style="position:absolute;width:46px;height:46px;border-radius:50%;background:inherit;top:-22px;left:14px;"></div>
+              <div style="position:absolute;width:30px;height:30px;border-radius:50%;background:inherit;top:-12px;left:50px;"></div>
+            </div>
+          </div>
+
           <div id="pet" class="pet" role="img" aria-label="開心的小寵物">
             <div id="accessoryHead" class="accessory accessory-head"></div>
             <div id="accessoryBody" class="accessory accessory-body"></div>
@@ -1038,33 +1209,39 @@
 
         <div class="stats">
           <div class="stat">
-            <span>肚子</span>
-            <div class="bar"><div id="hunger" class="fill"></div></div>
+            <span>🍖 肚子</span>
+            <div class="bar"><div id="hunger" class="fill high"></div></div>
             <span id="hungerText">55</span>
+            <span id="hungerEmoji" class="stat-emoji"></span>
           </div>
           <div class="stat">
-            <span>開心</span>
-            <div class="bar"><div id="happy" class="fill"></div></div>
+            <span>😊 開心</span>
+            <div class="bar"><div id="happy" class="fill high"></div></div>
             <span id="happyText">55</span>
+            <span id="happyEmoji" class="stat-emoji"></span>
           </div>
           <div class="stat">
-            <span>乾淨</span>
-            <div class="bar"><div id="clean" class="fill"></div></div>
+            <span>🛁 乾淨</span>
+            <div class="bar"><div id="clean" class="fill high"></div></div>
             <span id="cleanText">55</span>
+            <span id="cleanEmoji" class="stat-emoji"></span>
           </div>
         </div>
 
-        <h2 class="shop-title">寵物商店</h2>
+        <h2 class="shop-title">🛍️ 寵物商店</h2>
+        <div id="shopBanner" class="shop-banner" hidden>
+          💡 答題賺錢才能買東西！去「📚 每日練習」看完生字卡，然後答題賺錢。
+        </div>
         <div id="shopTabs" class="shop-tabs"></div>
         <div id="shop" class="shop"></div>
       </aside>
 
       <section class="history" aria-labelledby="progress-title">
-        <h2 id="progress-title">今日小成就</h2>
+        <h2 id="progress-title">🏆 今日小成就</h2>
         <div id="badges" class="badges">
           <span class="badge">開始練習</span>
         </div>
-        <h2>家長紀錄</h2>
+        <h2>📊 家長紀錄</h2>
         <button id="clearHistory" class="small-button">清除紀錄</button>
         <div id="parentStats" class="parent-grid"></div>
         <div id="historyList" class="history-list"></div>
@@ -1075,6 +1252,7 @@
   <script src="game-data.js"></script>
   <script>
     const DATA = window.ZH_REVIEW_DATA;
+
     const state = {
       coins: 0,
       streak: 0,
@@ -1104,89 +1282,189 @@
     };
 
     const el = {
-      coins: document.querySelector("#coins"),
-      promptLabel: document.querySelector("#promptLabel"),
-      prompt: document.querySelector("#prompt"),
-      promptExtra: document.querySelector("#promptExtra"),
-      answers: document.querySelector("#answers"),
-      feedback: document.querySelector("#feedback"),
-      timerRow: document.querySelector("#timerRow"),
-      timer: document.querySelector("#timer"),
-      bubbleArena: document.querySelector("#bubbleArena"),
-      dailyTitle: document.querySelector("#dailyTitle"),
-      practiceDate: document.querySelector("#practiceDate"),
-      dailyWords: document.querySelector("#dailyWords"),
-      reloadDaily: document.querySelector("#reloadDaily"),
-      badges: document.querySelector("#badges"),
-      parentStats: document.querySelector("#parentStats"),
-      historyList: document.querySelector("#historyList"),
-      clearHistory: document.querySelector("#clearHistory"),
-      reviewGate: document.querySelector("#reviewGate"),
-      reviewProgress: document.querySelector("#reviewProgress"),
-      studyChar: document.querySelector("#studyChar"),
-      studyBopomofo: document.querySelector("#studyBopomofo"),
-      studyRadical: document.querySelector("#studyRadical"),
+      coins:           document.querySelector("#coins"),
+      promptLabel:     document.querySelector("#promptLabel"),
+      prompt:          document.querySelector("#prompt"),
+      promptExtra:     document.querySelector("#promptExtra"),
+      answers:         document.querySelector("#answers"),
+      feedback:        document.querySelector("#feedback"),
+      streakDisplay:   document.querySelector("#streakDisplay"),
+      timerRow:        document.querySelector("#timerRow"),
+      timer:           document.querySelector("#timer"),
+      bubbleArena:     document.querySelector("#bubbleArena"),
+      dailyTitle:      document.querySelector("#dailyTitle"),
+      practiceDate:    document.querySelector("#practiceDate"),
+      dailyWords:      document.querySelector("#dailyWords"),
+      reloadDaily:     document.querySelector("#reloadDaily"),
+      badges:          document.querySelector("#badges"),
+      parentStats:     document.querySelector("#parentStats"),
+      historyList:     document.querySelector("#historyList"),
+      clearHistory:    document.querySelector("#clearHistory"),
+      reviewGate:      document.querySelector("#reviewGate"),
+      reviewProgress:  document.querySelector("#reviewProgress"),
+      studyChar:       document.querySelector("#studyChar"),
+      studyBopomofo:   document.querySelector("#studyBopomofo"),
+      studyRadical:    document.querySelector("#studyRadical"),
       studyDefinition: document.querySelector("#studyDefinition"),
-      studyPhrases: document.querySelector("#studyPhrases"),
-      prevCard: document.querySelector("#prevCard"),
-      nextCard: document.querySelector("#nextCard"),
-      finishReview: document.querySelector("#finishReview"),
-      shopTabs: document.querySelector("#shopTabs"),
-      shop: document.querySelector("#shop"),
-      pet: document.querySelector("#pet"),
-      accessoryHead: document.querySelector("#accessoryHead"),
-      accessoryBody: document.querySelector("#accessoryBody"),
-      accessoryFeet: document.querySelector("#accessoryFeet"),
-      accessoryToy: document.querySelector("#accessoryToy"),
-      hunger: document.querySelector("#hunger"),
-      happy: document.querySelector("#happy"),
-      clean: document.querySelector("#clean"),
-      hungerText: document.querySelector("#hungerText"),
-      happyText: document.querySelector("#happyText"),
-      cleanText: document.querySelector("#cleanText")
+      studyPhrases:    document.querySelector("#studyPhrases"),
+      prevCard:        document.querySelector("#prevCard"),
+      nextCard:        document.querySelector("#nextCard"),
+      finishReview:    document.querySelector("#finishReview"),
+      goChallenge:     document.querySelector("#goChallenge"),
+      shopBanner:      document.querySelector("#shopBanner"),
+      shopTabs:        document.querySelector("#shopTabs"),
+      shop:            document.querySelector("#shop"),
+      pet:             document.querySelector("#pet"),
+      accessoryHead:   document.querySelector("#accessoryHead"),
+      accessoryBody:   document.querySelector("#accessoryBody"),
+      accessoryFeet:   document.querySelector("#accessoryFeet"),
+      accessoryToy:    document.querySelector("#accessoryToy"),
+      hunger:          document.querySelector("#hunger"),
+      happy:           document.querySelector("#happy"),
+      clean:           document.querySelector("#clean"),
+      hungerText:      document.querySelector("#hungerText"),
+      happyText:       document.querySelector("#happyText"),
+      cleanText:       document.querySelector("#cleanText"),
+      hungerEmoji:     document.querySelector("#hungerEmoji"),
+      happyEmoji:      document.querySelector("#happyEmoji"),
+      cleanEmoji:      document.querySelector("#cleanEmoji"),
     };
 
     const shopCategories = {
-      pets: { label: "寵物", items: [
-        ["dog", "🐶", "小狗", 0], ["panda", "🐼", "熊貓", 30], ["cat", "🐱", "小貓", 30], ["bunny", "🐰", "兔兔", 30], ["fox", "🦊", "狐狸", 35],
-        ["bear", "🐻", "小熊", 35], ["hamster", "🐹", "倉鼠", 25], ["koala", "🐨", "無尾熊", 35], ["tiger", "🐯", "小虎", 40], ["unicorn", "🦄", "獨角獸", 50]
-      ] },
-      food: { label: "食物", items: [
-        ["apple", "🍎", "蘋果", 5], ["banana", "🍌", "香蕉", 5], ["carrot", "🥕", "紅蘿蔔", 6], ["rice", "🍚", "白飯", 6], ["noodles", "🍜", "麵麵", 8],
-        ["cookie", "🍪", "餅乾", 7], ["cake", "🍰", "蛋糕", 10], ["milk", "🥛", "牛奶", 6], ["fish", "🐟", "小魚", 8], ["bento", "🍱", "便當", 12]
-      ] },
-      toys: { label: "玩具", items: [
-        ["ball", "⚽", "球球", 10], ["bearToy", "🧸", "娃娃", 8], ["kite", "🪁", "風箏", 12], ["blocks", "🧩", "拼圖", 12], ["music", "🎵", "音樂盒", 14],
-        ["paint", "🎨", "畫筆", 13], ["train", "🚂", "小火車", 16], ["rocket", "🚀", "火箭", 18], ["game", "🎮", "遊戲機", 20], ["book", "📚", "故事書", 10]
-      ] },
-      clothes: { label: "衣服", items: [
-        ["bow", "🎀", "蝴蝶結", 15], ["crown", "👑", "皇冠", 25], ["hat", "🎩", "帽子", 16], ["cap", "🧢", "棒球帽", 14], ["scarf", "🧣", "圍巾", 18],
-        ["dress", "👗", "洋裝", 24], ["shirt", "👕", "上衣", 18], ["coat", "🧥", "外套", 28], ["glasses", "👓", "眼鏡", 16], ["medal", "🏅", "獎牌", 22]
-      ] },
-      shoes: { label: "鞋子", items: [
-        ["sneakers", "👟", "球鞋", 18], ["boots", "🥾", "靴子", 20], ["flats", "🥿", "平底鞋", 16], ["heels", "👠", "亮亮鞋", 22], ["sandals", "🩴", "涼鞋", 14],
-        ["skates", "⛸️", "溜冰鞋", 26], ["socks", "🧦", "襪子", 10], ["runner", "🏃", "跑跑鞋", 24], ["dance", "💃", "跳舞鞋", 28], ["rainboots", "☔", "雨鞋", 18]
-      ] }
+      pets: { label: "🐾 寵物", items: [
+        ["dog","🐶","小狗",0],["panda","🐼","熊貓",30],["cat","🐱","小貓",30],
+        ["bunny","🐰","兔兔",30],["fox","🦊","狐狸",35],["bear","🐻","小熊",35],
+        ["hamster","🐹","倉鼠",25],["koala","🐨","無尾熊",35],["tiger","🐯","小虎",40],
+        ["unicorn","🦄","獨角獸",50]
+      ]},
+      food: { label: "🍎 食物", items: [
+        ["apple","🍎","蘋果",5],["banana","🍌","香蕉",5],["carrot","🥕","紅蘿蔔",6],
+        ["rice","🍚","白飯",6],["noodles","🍜","麵麵",8],["cookie","🍪","餅乾",7],
+        ["cake","🍰","蛋糕",10],["milk","🥛","牛奶",6],["fish","🐟","小魚",8],
+        ["bento","🍱","便當",12]
+      ]},
+      toys: { label: "🧸 玩具", items: [
+        ["ball","⚽","球球",10],["bearToy","🧸","娃娃",8],["kite","🪁","風箏",12],
+        ["blocks","🧩","拼圖",12],["music","🎵","音樂盒",14],["paint","🎨","畫筆",13],
+        ["train","🚂","小火車",16],["rocket","🚀","火箭",18],["game","🎮","遊戲機",20],
+        ["book","📚","故事書",10]
+      ]},
+      clothes: { label: "👗 衣服", items: [
+        ["bow","🎀","蝴蝶結",15],["crown","👑","皇冠",25],["hat","🎩","帽子",16],
+        ["cap","🧢","棒球帽",14],["scarf","🧣","圍巾",18],["dress","👗","洋裝",24],
+        ["shirt","👕","上衣",18],["coat","🧥","外套",28],["glasses","👓","眼鏡",16],
+        ["medal","🏅","獎牌",22]
+      ]},
+      shoes: { label: "👟 鞋子", items: [
+        ["sneakers","👟","球鞋",18],["boots","🥾","靴子",20],["flats","🥿","平底鞋",16],
+        ["heels","👠","亮亮鞋",22],["sandals","🩴","涼鞋",14],["skates","⛸️","溜冰鞋",26],
+        ["socks","🧦","襪子",10],["runner","🏃","跑跑鞋",24],["dance","💃","跳舞鞋",28],
+        ["rainboots","☔","雨鞋",18]
+      ]}
     };
 
     const shop = {};
-    const headItems = new Set(["bow", "crown", "hat", "cap", "glasses", "medal"]);
-    const feetItems = new Set(["sneakers", "boots", "flats", "heels", "sandals", "skates", "socks", "runner", "dance", "rainboots"]);
+    const headItems = new Set(["bow","crown","hat","cap","glasses","medal"]);
+    const feetItems = new Set(["sneakers","boots","flats","heels","sandals","skates","socks","runner","dance","rainboots"]);
+
     Object.entries(shopCategories).forEach(([category, group]) => {
       group.items.forEach(([key, icon, name, price]) => {
-        const slot = category === "shoes" ? "feet" : category === "toys" ? "toy" : headItems.has(key) ? "head" : category === "clothes" ? "body" : null;
+        const slot = category === "shoes" ? "feet"
+          : category === "toys" ? "toy"
+          : headItems.has(key) ? "head"
+          : category === "clothes" ? "body" : null;
         shop[key] = {
           key, icon, name, price, category,
           pet: category === "pets" ? key : null,
           accessory: category === "clothes" || category === "shoes" || category === "toys" ? icon : null,
           slot,
-          stat: category === "food" ? "hunger" : category === "toys" ? "happy" : null,
+          stat:   category === "food" ? "hunger" : category === "toys" ? "happy" : null,
           amount: category === "food" ? 18 : category === "toys" ? 14 : 0,
           message: `${name}買好了！`
         };
       });
     });
 
+    /* ── Bubble colours ────────────────────────────── */
+    const bubbleColors = [
+      { bg: "rgba(252,211,77,.75)",  border: "#f59e0b" },
+      { bg: "rgba(167,243,208,.75)", border: "#10b981" },
+      { bg: "rgba(196,181,253,.75)", border: "#7c3aed" },
+      { bg: "rgba(253,186,116,.75)", border: "#f97316" },
+      { bg: "rgba(147,197,253,.75)", border: "#3b82f6" },
+      { bg: "rgba(249,168,212,.75)", border: "#ec4899" },
+      { bg: "rgba(134,239,172,.75)", border: "#16a34a" },
+      { bg: "rgba(253,224,71,.75)",  border: "#ca8a04" },
+    ];
+
+    /* ── Confetti ──────────────────────────────────── */
+    const confettiColors = ["#f59e0b","#10b981","#3b82f6","#ec4899","#f97316","#7c3aed","#16a34a","#e11d48"];
+
+    function confettiBurst(originX, originY) {
+      const count = 32;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        const drift  = (Math.random() - .5) * 280;
+        const dur    = 700 + Math.random() * 600;
+        const size   = 8 + Math.random() * 8;
+        piece.style.cssText = `
+          left: ${originX}px;
+          top: ${originY}px;
+          width: ${size}px;
+          height: ${size}px;
+          background: ${color};
+          --drift: ${drift}px;
+          animation-duration: ${dur}ms;
+          border-radius: ${Math.random() > .5 ? "50%" : "2px"};
+        `;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), dur + 50);
+      }
+    }
+
+    /* ── Streak display ───────────────────────────── */
+    function renderStreak() {
+      if (state.streak <= 0) {
+        el.streakDisplay.textContent = "";
+        return;
+      }
+      const prev = el.streakDisplay.textContent;
+      el.streakDisplay.textContent = `🔥 ${state.streak}`;
+      if (prev !== el.streakDisplay.textContent) {
+        el.streakDisplay.classList.remove("pop");
+        void el.streakDisplay.offsetWidth;
+        el.streakDisplay.classList.add("pop");
+      }
+    }
+
+    /* ── Pet expression ───────────────────────────── */
+    function updatePetExpression() {
+      const avg = (state.stats.hunger + state.stats.happy + state.stats.clean) / 3;
+      el.pet.classList.remove("mood-neutral", "mood-sad");
+      if (avg < 30) el.pet.classList.add("mood-sad");
+      else if (avg < 55) el.pet.classList.add("mood-neutral");
+    }
+
+    /* ── Stat bar colour + emoji ──────────────────── */
+    function updateStatBars() {
+      [["hunger","hungerText","hungerEmoji"],
+       ["happy","happyText","happyEmoji"],
+       ["clean","cleanText","cleanEmoji"]
+      ].forEach(([key, textId, emojiId]) => {
+        const value = state.stats[key] ?? 0;
+        el[key].style.width = `${value}%`;
+        el[textId].textContent = value;
+        el[key].classList.remove("high","mid","low");
+        if (value >= 60) el[key].classList.add("high");
+        else if (value >= 30) el[key].classList.add("mid");
+        else el[key].classList.add("low");
+        el[emojiId].textContent = value >= 70 ? "🌟" : value >= 30 ? "" : "⚠️";
+      });
+    }
+
+    /* ── Helpers ──────────────────────────────────── */
     function todayKey() {
       const now = new Date();
       const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
@@ -1197,6 +1475,7 @@
       return Number.isInteger(value) ? String(value) : value.toFixed(1);
     }
 
+    /* ── Persistence ──────────────────────────────── */
     function loadProgress() {
       try {
         const saved = JSON.parse(localStorage.getItem("zhPetReviewProgress") || "{}");
@@ -1204,13 +1483,13 @@
         state.stats = saved.stats || state.stats;
         state.inventory = saved.inventory || state.inventory;
         state.inventory.accessories ||= [];
-        state.inventory.equipped ||= {};
-        state.inventory.owned ||= [];
-        state.inventory.ownedPets ||= [state.inventory.pet || "dog"];
+        state.inventory.equipped    ||= {};
+        state.inventory.owned       ||= [];
+        state.inventory.ownedPets   ||= [state.inventory.pet || "dog"];
         if (!state.inventory.ownedPets.includes("dog")) state.inventory.ownedPets.unshift("dog");
-        if (!state.inventory.owned.includes("dog")) state.inventory.owned.unshift("dog");
+        if (!state.inventory.owned.includes("dog"))     state.inventory.owned.unshift("dog");
         state.petStats = saved.petStats || { [state.inventory.pet || "dog"]: saved.stats || state.stats };
-        state.inventory.ownedPets.forEach(pet => state.petStats[pet] ||= { hunger: 55, happy: 55, clean: 55 });
+        state.inventory.ownedPets.forEach(pet => { state.petStats[pet] ||= { hunger: 55, happy: 55, clean: 55 }; });
         state.stats = state.petStats[state.inventory.pet] || state.stats;
         state.history = saved.history || {};
       } catch {
@@ -1236,27 +1515,22 @@
     function recordQuestion(result, reward = 0) {
       const record = dayRecord();
       record.played += 1;
-      record.coins = Math.round((record.coins + reward) * 10) / 10;
-      if (result === "first") {
-        record.correct += 1;
-        record.firstTry += 1;
-      } else if (result === "second") {
-        record.correct += 1;
-        record.secondTry += 1;
-      } else {
-        record.wrong += 1;
-      }
+      record.coins   = Math.round((record.coins + reward) * 10) / 10;
+      if (result === "first")       { record.correct += 1; record.firstTry += 1; }
+      else if (result === "second") { record.correct += 1; record.secondTry += 1; }
+      else                          { record.wrong += 1; }
       saveProgress();
       renderParentDashboard();
     }
 
+    /* ── Schedule / pools ─────────────────────────── */
     function activeScheduleDate() {
       if (el.practiceDate?.value && DATA.schedule[el.practiceDate.value]) return el.practiceDate.value;
       const dates = Object.keys(DATA.schedule).sort();
       const today = todayKey();
       if (DATA.schedule[today]?.length) return today;
-      const previous = dates.filter(date => date <= today && DATA.schedule[date]?.length).pop();
-      return previous || dates.find(date => DATA.schedule[date]?.length) || dates[0];
+      const previous = dates.filter(d => d <= today && DATA.schedule[d]?.length).pop();
+      return previous || dates.find(d => DATA.schedule[d]?.length) || dates[0];
     }
 
     function buildPools() {
@@ -1266,19 +1540,19 @@
       state.reviewIndex = 0;
       state.reviewComplete = false;
       el.finishReview.textContent = "我看完了，開始遊戲";
-      const chars = [...new Set(DATA.schedule[date] || [])].filter(char => DATA.entries[char]);
-      state.words = chars.map(char => ({ char, ...DATA.entries[char] }));
+      const chars = [...new Set(DATA.schedule[date] || [])].filter(c => DATA.entries[c]);
+      state.words = chars.map(c => ({ char: c, ...DATA.entries[c] }));
       state.phrasePool = state.words.flatMap(item =>
-        (item.phrases || []).map(phrase => ({ ...phrase, char: item.char, bopomofo: item.bopomofo }))
-      ).filter(phrase => phrase.word.length >= 2 && phrase.zh.length >= 4);
+        (item.phrases || []).map(p => ({ ...p, char: item.char, bopomofo: item.bopomofo }))
+      ).filter(p => p.word.length >= 2 && p.zh.length >= 4);
 
       if (state.words.length < 4) {
-        state.words = Object.entries(DATA.entries).slice(0, 20).map(([char, entry]) => ({ char, ...entry }));
+        state.words = Object.entries(DATA.entries).slice(0, 20).map(([c, e]) => ({ char: c, ...e }));
       }
       if (state.phrasePool.length < 4) {
-        state.phrasePool = Object.entries(DATA.entries).flatMap(([char, entry]) =>
-          (entry.phrases || []).map(phrase => ({ ...phrase, char, bopomofo: entry.bopomofo }))
-        ).filter(phrase => phrase.word.length >= 2 && phrase.zh.length >= 4).slice(0, 80);
+        state.phrasePool = Object.entries(DATA.entries).flatMap(([c, e]) =>
+          (e.phrases || []).map(p => ({ ...p, char: c, bopomofo: e.bopomofo }))
+        ).filter(p => p.word.length >= 2 && p.zh.length >= 4).slice(0, 80);
       }
 
       el.dailyTitle.textContent = `${date} 複習`;
@@ -1296,20 +1570,19 @@
     function buildChallengePools() {
       const today = todayKey();
       const chars = [...new Set(Object.entries(DATA.schedule)
-        .filter(([date]) => date <= today)
-        .flatMap(([, list]) => list || []))]
-        .filter(char => DATA.entries[char]);
-      state.words = chars.map(char => ({ char, ...DATA.entries[char] }));
+        .filter(([d]) => d <= today).flatMap(([,list]) => list || []))]
+        .filter(c => DATA.entries[c]);
+      state.words = chars.map(c => ({ char: c, ...DATA.entries[c] }));
       state.phrasePool = state.words.flatMap(item =>
-        (item.phrases || []).map(phrase => ({ ...phrase, char: item.char, bopomofo: item.bopomofo }))
-      ).filter(phrase => phrase.word.length >= 2 && phrase.zh.length >= 4);
+        (item.phrases || []).map(p => ({ ...p, char: item.char, bopomofo: item.bopomofo }))
+      ).filter(p => p.word.length >= 2 && p.zh.length >= 4);
       if (state.words.length < 4) {
-        state.words = Object.entries(DATA.entries).slice(0, 80).map(([char, entry]) => ({ char, ...entry }));
+        state.words = Object.entries(DATA.entries).slice(0, 80).map(([c, e]) => ({ char: c, ...e }));
       }
       if (state.phrasePool.length < 4) {
-        state.phrasePool = Object.entries(DATA.entries).flatMap(([char, entry]) =>
-          (entry.phrases || []).map(phrase => ({ ...phrase, char, bopomofo: entry.bopomofo }))
-        ).filter(phrase => phrase.word.length >= 2 && phrase.zh.length >= 4).slice(0, 120);
+        state.phrasePool = Object.entries(DATA.entries).flatMap(([c, e]) =>
+          (e.phrases || []).map(p => ({ ...p, char: c, bopomofo: e.bopomofo }))
+        ).filter(p => p.word.length >= 2 && p.zh.length >= 4).slice(0, 120);
       }
       state.reviewComplete = true;
       el.reviewGate.hidden = true;
@@ -1331,30 +1604,31 @@
       if (!locked) pickQuestion();
     }
 
+    /* ── Review card ──────────────────────────────── */
     function renderReviewCard() {
       const item = state.words[state.reviewIndex] || state.words[0];
       if (!item) return;
       el.reviewProgress.textContent = `生字卡 ${state.reviewIndex + 1} / ${state.words.length}`;
-      el.studyChar.textContent = item.char;
-      el.studyBopomofo.textContent = item.bopomofo || "";
-      el.studyRadical.textContent = item.radical || "";
+      el.studyChar.textContent       = item.char;
+      el.studyBopomofo.textContent   = item.bopomofo || "";
+      el.studyRadical.textContent    = item.radical || "";
       el.studyDefinition.textContent = item.definition || "";
       const groups = {};
-      (item.phrases || []).forEach(phrase => {
-        const length = Math.min([...phrase.word].length, 4);
-        groups[length] ||= [];
-        groups[length].push(phrase);
+      (item.phrases || []).forEach(p => {
+        const len = Math.min([...p.word].length, 4);
+        groups[len] ||= [];
+        groups[len].push(p);
       });
       el.studyPhrases.innerHTML = "";
-      Object.keys(groups).sort((a, b) => Number(a) - Number(b)).forEach(length => {
+      Object.keys(groups).sort((a, b) => Number(a) - Number(b)).forEach(len => {
         const group = document.createElement("div");
         group.className = "phrase-group";
-        group.innerHTML = `<h3>常用詞（${length}字）</h3>`;
+        group.innerHTML = `<h3>常用詞（${len}字）</h3>`;
         const list = document.createElement("ul");
-        groups[length].slice(0, 3).forEach(phrase => {
+        groups[len].slice(0, 3).forEach(p => {
           const li = document.createElement("li");
           li.className = "zhuyin-text";
-          li.innerHTML = `<span class="phrase-word">${phrase.word}</span>：${phrase.zh}`;
+          li.innerHTML = `<span class="phrase-word">${p.word}</span>：${p.zh}`;
           list.append(li);
         });
         group.append(list);
@@ -1362,7 +1636,7 @@
       });
       el.prevCard.disabled = state.reviewIndex === 0;
       el.nextCard.textContent = state.reviewIndex === state.words.length - 1 ? "最後一張" : "下一張";
-      el.nextCard.disabled = state.reviewIndex === state.words.length - 1;
+      el.nextCard.disabled    = state.reviewIndex === state.words.length - 1;
       el.finishReview.disabled = state.reviewIndex !== state.words.length - 1;
     }
 
@@ -1370,85 +1644,84 @@
       return [...list].sort(() => Math.random() - .5).slice(0, count);
     }
 
+    /* ── Round reset ──────────────────────────────── */
     function resetRoundUi() {
       state.locked = false;
       clearInterval(state.timerId);
       clearInterval(state.bubbleId);
       clearInterval(state.bubbleTargetTimer);
-      state.timerId = null;
-      state.bubbleId = null;
-      state.bubbleTargetTimer = null;
+      state.timerId = state.bubbleId = state.bubbleTargetTimer = null;
       el.feedback.textContent = "";
-      el.answers.innerHTML = "";
+      el.feedback.className   = "feedback";
+      el.answers.innerHTML    = "";
       el.bubbleArena.innerHTML = "";
       el.bubbleArena.classList.remove("show");
       el.timerRow.hidden = true;
     }
 
+    /* ── Question picker ──────────────────────────── */
     function pickQuestion() {
       if (!state.reviewComplete && !state.challengeMode) return;
       resetRoundUi();
       if (state.challengeMode && state.challengeType === "bubble") return showBubblePop();
-      if (state.challengeMode || !state.challengeMode) {
-        state.mode = sample(["charMeaning", "phraseMeaning", "sentenceBlank"], 1)[0];
-      }
-      if (state.mode === "charMeaning") return showCharMeaning();
-      if (state.mode === "phraseMeaning") return showPhraseMeaning();
-      if (state.mode === "sentenceBlank") return showSentenceBlank();
+      state.mode = sample(["charMeaning","phraseMeaning","sentenceBlank"], 1)[0];
+      if (state.mode === "charMeaning")    return showCharMeaning();
+      if (state.mode === "phraseMeaning")  return showPhraseMeaning();
+      if (state.mode === "sentenceBlank")  return showSentenceBlank();
       showBubblePop();
     }
 
+    /* ── Game modes ───────────────────────────────── */
     function showCharMeaning() {
-      const word = state.words[Math.floor(Math.random() * state.words.length)];
-      const choices = sample(state.words.filter(item => item.char !== word.char), 3).concat(word);
+      const word    = state.words[Math.floor(Math.random() * state.words.length)];
+      const choices = sample(state.words.filter(i => i.char !== word.char), 3).concat(word);
       state.current = { type: "char", answer: word.char, hint: word.definition, misses: 0 };
       el.promptLabel.textContent = "這個字是什麼意思？";
-      el.prompt.textContent = word.char;
-      el.prompt.className = "big-char";
+      el.prompt.textContent      = word.char;
+      el.prompt.className        = "big-char";
       el.promptExtra.textContent = word.bopomofo;
-      renderAnswers(sample(choices, choices.length), item => item.definition, item => item.char === word.char);
+      renderAnswers(sample(choices, choices.length), i => i.definition, i => i.char === word.char);
     }
 
     function showPhraseMeaning() {
-      const phrase = state.phrasePool[Math.floor(Math.random() * state.phrasePool.length)];
-      const choices = sample(state.phrasePool.filter(item => item.word !== phrase.word), 3).concat(phrase);
+      const phrase  = state.phrasePool[Math.floor(Math.random() * state.phrasePool.length)];
+      const choices = sample(state.phrasePool.filter(i => i.word !== phrase.word), 3).concat(phrase);
       state.current = { type: "phrase", answer: phrase.word, hint: phrase.zh, misses: 0 };
       el.promptLabel.textContent = "這個語詞是什麼意思？";
-      el.prompt.textContent = phrase.word;
-      el.prompt.className = "sentence";
+      el.prompt.textContent      = phrase.word;
+      el.prompt.className        = "sentence";
       el.promptExtra.textContent = phrase.bopomofo;
-      renderAnswers(sample(choices, choices.length), item => item.zh, item => item.word === phrase.word);
+      renderAnswers(sample(choices, choices.length), i => i.zh, i => i.word === phrase.word);
     }
 
     function showSentenceBlank() {
-      const usable = state.phrasePool.filter(item => [...item.word].includes(item.char));
-      const phrase = usable[Math.floor(Math.random() * usable.length)] || state.phrasePool[0];
+      const usable  = state.phrasePool.filter(i => [...i.word].includes(i.char));
+      const phrase  = usable[Math.floor(Math.random() * usable.length)] || state.phrasePool[0];
       const blanked = phrase.word.replace(phrase.char, "＿");
-      const choices = sample(state.words.filter(item => item.char !== phrase.char), 3).concat(
-        state.words.find(item => item.char === phrase.char) || { char: phrase.char }
+      const choices = sample(state.words.filter(i => i.char !== phrase.char), 3).concat(
+        state.words.find(i => i.char === phrase.char) || { char: phrase.char }
       );
       state.current = { type: "blank", answer: phrase.char, hint: phrase.word, misses: 0 };
       el.promptLabel.textContent = "選一個字，把語詞補完整";
-      el.prompt.innerHTML = `請把「${blanked}」補完整`;
-      el.prompt.className = "sentence";
+      el.prompt.innerHTML        = `請把「${blanked}」補完整`;
+      el.prompt.className        = "sentence";
       el.promptExtra.textContent = phrase.zh;
-      renderAnswers(sample(choices, choices.length), item => item.char, item => item.char === phrase.char);
+      renderAnswers(sample(choices, choices.length), i => i.char, i => i.char === phrase.char);
     }
 
+    /* ── Bubble pop ───────────────────────────────── */
     function showBubblePop() {
       state.bubbleLives = 3;
       state.bubbleMissed = [];
       state.timeLeft = 10;
       startBubbleTarget();
       el.timer.textContent = state.timeLeft;
-      el.timerRow.hidden = false;
+      el.timerRow.hidden   = false;
       el.bubbleArena.classList.add("show");
       state.timerId = setInterval(() => {
         state.timeLeft -= 1;
         el.timer.textContent = state.timeLeft;
-        if (state.timeLeft <= 0) {
-          endBubbleRound();
-        }
+        if (state.timeLeft <= 0) endBubbleRound();
       }, 1000);
       state.bubbleTargetTimer = setInterval(() => {
         missBubbleTarget("跳過");
@@ -1470,8 +1743,8 @@
       const target = state.words[Math.floor(Math.random() * state.words.length)];
       state.current = { type: "bubble", answer: target.char, hint: target.definition, misses: 0 };
       el.promptLabel.textContent = "快打指定的字";
-      el.prompt.textContent = target.bopomofo;
-      el.prompt.className = "meaning";
+      el.prompt.textContent      = target.bopomofo;
+      el.prompt.className        = "meaning";
       el.promptExtra.textContent = `找：${target.definition}　生命：${"♥".repeat(state.bubbleLives)}`;
       spawnBubbles(target.char);
       state.bubbleId = setInterval(() => spawnBubbles(target.char), 650);
@@ -1485,7 +1758,7 @@
       recordQuestion("wrong", 0);
       tickPet();
       updateUi();
-      el.feedback.textContent = `${reason}：「${state.current.answer}」。剩 ${state.bubbleLives} 次機會。`;
+      setFeedback(`${reason}：「${state.current.answer}」。剩 ${state.bubbleLives} 次機會。`, "wrong");
       if (state.bubbleLives <= 0) endBubbleRound();
     }
 
@@ -1495,15 +1768,13 @@
       clearInterval(state.timerId);
       clearInterval(state.bubbleId);
       clearInterval(state.bubbleTargetTimer);
-      state.timerId = null;
-      state.bubbleId = null;
-      state.bubbleTargetTimer = null;
+      state.timerId = state.bubbleId = state.bubbleTargetTimer = null;
       el.bubbleArena.innerHTML = "";
-      const missed = [...new Set(state.bubbleMissed)].filter(char => DATA.entries[char]);
+      const missed = [...new Set(state.bubbleMissed)].filter(c => DATA.entries[c]);
       if (missed.length) {
         showMissedReview(missed);
       } else {
-        el.feedback.textContent = "時間到！這回合沒有漏掉的字。";
+        setFeedback("時間到！這回合沒有漏掉的字。", "correct");
         setTimeout(() => {
           state.locked = false;
           showBubblePop();
@@ -1512,44 +1783,50 @@
     }
 
     function showMissedReview(chars) {
-      state.words = chars.map(char => ({ char, ...DATA.entries[char] }));
+      state.words = chars.map(c => ({ char: c, ...DATA.entries[c] }));
       state.reviewIndex = 0;
-      state.missedReviewIndex = 0;
       el.reviewGate.hidden = false;
       document.querySelector(".question").hidden = true;
-      el.answers.hidden = true;
-      el.feedback.hidden = false;
+      el.answers.hidden    = true;
+      el.feedback.hidden   = false;
       el.bubbleArena.classList.remove("show");
       el.bubbleArena.hidden = true;
-      el.feedback.textContent = "先看漏掉的生字卡，看完就可以再玩一回合。";
+      setFeedback("先看漏掉的生字卡，看完就可以再玩一回合。", "");
       renderReviewCard();
       el.finishReview.disabled = state.words.length > 1;
       el.finishReview.textContent = "看完了，再玩一回合";
     }
 
     function spawnBubbles(targetChar) {
-      const chars = sample(state.words, 5).map(item => item.char);
+      const chars = sample(state.words, 5).map(i => i.char);
       if (!chars.includes(targetChar)) chars[Math.floor(Math.random() * chars.length)] = targetChar;
       chars.forEach(char => {
+        const color  = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
         const bubble = document.createElement("button");
         bubble.className = "bubble";
         bubble.textContent = char;
-        bubble.style.left = `${Math.random() * 82 + 3}%`;
-        bubble.style.animationDuration = `${Math.random() * 1.2 + 2.3}s`;
+        bubble.style.left   = `${Math.random() * 80 + 5}%`;
+        bubble.style.background  = color.bg;
+        bubble.style.borderColor = color.border;
+        bubble.style.animationDuration = `${Math.random() * 1.4 + 2.2}s`;
         bubble.addEventListener("click", () => {
           if (char === targetChar) {
             if (state.locked) return;
             state.locked = true;
             clearInterval(state.timerId);
             clearInterval(state.bubbleId);
-            bubble.remove();
+            bubble.classList.add("burst");
+            setTimeout(() => bubble.remove(), 260);
+            const rect = bubble.getBoundingClientRect();
+            confettiBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
             rewardCorrect(1, "first");
-            el.feedback.textContent = "打中了！賺到 1 元。";
+            setFeedback("打中了！賺到 1 元。", "correct");
             state.locked = false;
             resetBubbleTargetTimer();
             startBubbleTarget();
           } else {
-            bubble.remove();
+            bubble.classList.add("burst");
+            setTimeout(() => bubble.remove(), 260);
             missBubbleTarget(`不是「${char}」`);
             if (!state.locked) {
               resetBubbleTargetTimer();
@@ -1558,10 +1835,11 @@
           }
         });
         el.bubbleArena.append(bubble);
-        setTimeout(() => bubble.remove(), 3600);
+        setTimeout(() => bubble.remove(), 3700);
       });
     }
 
+    /* ── Answer rendering ─────────────────────────── */
     function renderAnswers(choices, labelFor, isCorrect) {
       el.answers.innerHTML = "";
       choices.forEach(choice => {
@@ -1573,15 +1851,22 @@
       });
     }
 
+    function setFeedback(text, type) {
+      el.feedback.textContent = text;
+      el.feedback.className   = "feedback" + (type === "correct" ? " fb-correct" : type === "wrong" ? " fb-wrong" : "");
+    }
+
     function answer(button, correct) {
       if (state.locked) return;
       if (correct) {
         state.locked = true;
         const secondTry = state.current.misses > 0;
-        const reward = secondTry ? .5 : 1;
+        const reward    = secondTry ? .5 : 1;
         rewardCorrect(reward, secondTry ? "second" : "first");
         button.classList.add("correct");
-        el.feedback.textContent = `答對了！賺到 ${formatMoney(reward)} 元。`;
+        const rect = button.getBoundingClientRect();
+        confettiBurst(rect.left + rect.width / 2, rect.top);
+        setFeedback(`答對了！賺到 ${formatMoney(reward)} 元。`, "correct");
         updateUi();
         setTimeout(pickQuestion, 900);
         return;
@@ -1591,7 +1876,7 @@
       button.classList.add("wrong");
       button.disabled = true;
       if (state.current.misses === 1) {
-        el.feedback.textContent = "再試一次，答對還可以賺 0.5 元。";
+        setFeedback("再試一次，答對還可以賺 0.5 元。", "");
         return;
       }
 
@@ -1606,7 +1891,7 @@
 
     function revealCorrectAnswer() {
       const hint = state.current.hint ? `：${state.current.hint}` : "";
-      el.feedback.textContent = `答案是「${state.current.answer}」${hint}。先看 10 秒，等一下再繼續。`;
+      setFeedback(`答案是「${state.current.answer}」${hint}。先看 10 秒，等一下再繼續。`, "wrong");
       document.querySelectorAll(".answer").forEach(button => {
         if (button.textContent === state.current.answer || button.textContent === state.current.hint) {
           button.classList.add("correct");
@@ -1616,7 +1901,7 @@
 
     function rewardCorrect(reward, result = "first") {
       state.streak += 1;
-      state.coins = Math.round((state.coins + reward) * 10) / 10;
+      state.coins   = Math.round((state.coins + reward) * 10) / 10;
       recordQuestion(result, reward);
       addBadgeForProgress();
       tickPet();
@@ -1625,30 +1910,28 @@
 
     function tickPet() {
       state.inventory.ownedPets.forEach(pet => {
-        const stats = state.petStats[pet] ||= { hunger: 55, happy: 55, clean: 55 };
-        stats.hunger = Math.max(0, stats.hunger - 1);
-        stats.happy = Math.max(0, stats.happy - 1);
-        stats.clean = Math.max(0, stats.clean - 1);
+        const s = state.petStats[pet] ||= { hunger: 55, happy: 55, clean: 55 };
+        s.hunger = Math.max(0, s.hunger - 1);
+        s.happy  = Math.max(0, s.happy  - 1);
+        s.clean  = Math.max(0, s.clean  - 1);
       });
       state.stats = state.petStats[state.inventory.pet];
       saveProgress();
     }
 
+    /* ── Shop / buy ───────────────────────────────── */
     function buy(key) {
       const item = shop[key];
       if (!item) return;
-      const permanent = item.category !== "food";
+      const permanent    = item.category !== "food";
       const alreadyOwned = state.inventory.owned.includes(key) || state.inventory.pet === item.pet;
-      if (alreadyOwned && permanent) {
-        equipOwnedItem(item);
-        return;
-      }
-      if (state.coins < item.price) return;
+      if (alreadyOwned && permanent) { equipOwnedItem(item); return; }
+      if (state.coins < item.price)  return;
       state.coins = Math.round((state.coins - item.price) * 10) / 10;
       if (item.category === "food") {
         state.stats = state.petStats[state.inventory.pet] ||= { hunger: 55, happy: 55, clean: 55 };
         state.stats[item.stat] = Math.min(100, state.stats[item.stat] + item.amount);
-        state.stats.happy = Math.min(100, state.stats.happy + 3);
+        state.stats.happy      = Math.min(100, state.stats.happy + 3);
       } else if (item.stat) {
         state.stats[item.stat] = Math.min(100, state.stats[item.stat] + item.amount);
       }
@@ -1665,11 +1948,9 @@
         equipOwnedItem(item);
         addBadge("新寵物加入");
       }
-      if (permanent && !state.inventory.owned.includes(key)) {
-        state.inventory.owned.push(key);
-      }
-      addBadge(item.message.replace("！", ""));
-      el.feedback.textContent = item.message;
+      if (permanent && !state.inventory.owned.includes(key)) state.inventory.owned.push(key);
+      addBadge(item.message.replace("！",""));
+      setFeedback(item.message, "correct");
       applyInventory();
       saveProgress();
       updateUi();
@@ -1689,10 +1970,13 @@
       updateUi();
     }
 
+    /* ── Badges ───────────────────────────────────── */
     function addBadgeForProgress() {
-      if (state.streak === 3) addBadge("連續答對 3 題");
-      if (state.streak === 5) addBadge("連續答對 5 題");
-      if (state.coins >= 20) addBadge("存到 20 元");
+      if (state.streak === 3)    addBadge("連續答對 3 題 🔥");
+      if (state.streak === 5)    addBadge("連續答對 5 題 ⚡");
+      if (state.streak === 10)   addBadge("連續答對 10 題 🏆");
+      if (state.coins  >= 20)    addBadge("存到 20 元 💰");
+      if (state.coins  >= 50)    addBadge("存到 50 元 🤑");
     }
 
     function addBadge(text) {
@@ -1704,29 +1988,33 @@
       el.badges.innerHTML = "";
       state.earnedBadges.forEach(text => {
         const badge = document.createElement("span");
-        badge.className = "badge";
+        badge.className   = "badge";
         badge.textContent = text;
         el.badges.append(badge);
       });
     }
 
+    /* ── Apply inventory visuals ──────────────────── */
     function applyInventory() {
       el.pet.className = "pet";
       if (state.inventory.pet && state.inventory.pet !== "dog") {
         el.pet.classList.add(`pet-${state.inventory.pet}`);
       }
+      updatePetExpression();
       [
         ["head", el.accessoryHead],
         ["body", el.accessoryBody],
         ["feet", el.accessoryFeet],
-        ["toy", el.accessoryToy]
+        ["toy",  el.accessoryToy]
       ].forEach(([slot, target]) => {
         const item = shop[state.inventory.equipped?.[slot]];
-        target.textContent = item?.accessory ? (slot === "feet" ? `${item.accessory}${item.accessory}` : item.accessory) : "";
+        target.textContent = item?.accessory
+          ? (slot === "feet" ? `${item.accessory}${item.accessory}` : item.accessory) : "";
         target.classList.toggle("show", Boolean(item?.accessory));
       });
     }
 
+    /* ── Shop rendering ───────────────────────────── */
     function renderShopTabs() {
       el.shopTabs.innerHTML = "";
       Object.entries(shopCategories).forEach(([key, group]) => {
@@ -1747,31 +2035,47 @@
       el.shop.innerHTML = "";
       const group = shopCategories[state.shopCategory] || shopCategories.pets;
       group.items.forEach(([key]) => {
-        const item = shop[key];
+        const item   = shop[key];
+        const owned  = state.inventory.owned.includes(key) || state.inventory.pet === item.pet;
+        const canAfford = state.coins >= item.price;
         const button = document.createElement("button");
         button.className = "item";
         button.dataset.buy = key;
+
+        let boostHtml = "";
+        if (item.category === "food")  boostHtml = `<span class="item-boost">+${item.amount} 肚子</span>`;
+        if (item.category === "toys")  boostHtml = `<span class="item-boost">+${item.amount} 開心</span>`;
+        if (item.slot === "head")      boostHtml = `<span class="item-boost">頭部配件</span>`;
+        if (item.slot === "body")      boostHtml = `<span class="item-boost">身體配件</span>`;
+        if (item.slot === "feet")      boostHtml = `<span class="item-boost">腳部配件</span>`;
+
+        const needHtml = (!owned && !canAfford && item.price > 0)
+          ? `<span class="item-need">差 ${Math.ceil(item.price - state.coins)} 元</span>`
+          : "";
+
         button.innerHTML = `
           <span class="item-icon">${item.icon}</span>
           <span>${item.name}</span>
-          <span class="price">${item.price} 元</span>
+          <span class="price">${item.price > 0 ? item.price + " 元" : "免費"}</span>
+          ${boostHtml}${needHtml}
         `;
         button.addEventListener("click", () => buy(key));
         el.shop.append(button);
       });
-      document.querySelectorAll(".shop-tab").forEach(button => {
-        button.classList.toggle("active", button.dataset.category === state.shopCategory);
+      document.querySelectorAll(".shop-tab").forEach(b => {
+        b.classList.toggle("active", b.dataset.category === state.shopCategory);
       });
       updateUi();
     }
 
+    /* ── Parent dashboard ─────────────────────────── */
     function renderParentDashboard() {
-      const records = Object.entries(state.history).sort(([a], [b]) => b.localeCompare(a));
-      const totals = records.reduce((sum, [, record]) => ({
-        days: sum.days + (record.played > 0 ? 1 : 0),
-        played: sum.played + record.played,
-        correct: sum.correct + record.correct,
-        coins: Math.round((sum.coins + record.coins) * 10) / 10
+      const records = Object.entries(state.history).sort(([a],[b]) => b.localeCompare(a));
+      const totals  = records.reduce((sum, [, r]) => ({
+        days:    sum.days    + (r.played > 0 ? 1 : 0),
+        played:  sum.played  + r.played,
+        correct: sum.correct + r.correct,
+        coins:   Math.round((sum.coins + r.coins) * 10) / 10
       }), { days: 0, played: 0, correct: 0, coins: 0 });
       const accuracy = totals.played ? Math.round(totals.correct / totals.played * 100) : 0;
 
@@ -1783,41 +2087,64 @@
       `;
 
       el.historyList.innerHTML = "";
-      records.slice(0, 10).forEach(([date, record]) => {
+      records.slice(0, 10).forEach(([date, r]) => {
         const row = document.createElement("div");
         row.className = "history-row";
-        const dayAccuracy = record.played ? Math.round(record.correct / record.played * 100) : 0;
+        const acc = r.played ? Math.round(r.correct / r.played * 100) : 0;
         row.innerHTML = `
           <span>${date}</span>
-          <span>${record.played} 題</span>
-          <span>${dayAccuracy}%</span>
-          <span>+${formatMoney(record.coins)} 元</span>
+          <span>${r.played} 題</span>
+          <span>${acc}%</span>
+          <span>+${formatMoney(r.coins)} 元</span>
         `;
         el.historyList.append(row);
       });
     }
 
+    /* ── Global UI update ─────────────────────────── */
     function updateUi() {
       el.coins.textContent = formatMoney(state.coins);
-      for (const key of Object.keys(state.stats)) {
-        const value = state.stats[key];
-        el[key].style.width = `${value}%`;
-        el[`${key}Text`].textContent = value;
-      }
+      updateStatBars();
+      updatePetExpression();
+      renderStreak();
+
+      // Show banner only when on pet view and player has very few coins
+      const minPrice = Math.min(...Object.values(shop).filter(i => i.category !== "pets" || i.price > 0).map(i => i.price).filter(p => p > 0));
+      if (el.shopBanner) el.shopBanner.hidden = state.coins >= 5;
+
       document.querySelectorAll(".item").forEach(button => {
-        const item = shop[button.dataset.buy];
-        const owned = state.inventory.owned.includes(button.dataset.buy) || state.inventory.pet === item.pet;
-        const active = (item.pet && state.inventory.pet === item.pet) || (item.accessory && state.inventory.equipped[item.slot] === item.key);
-        button.classList.toggle("owned", owned);
+        const key   = button.dataset.buy;
+        const item  = shop[key];
+        if (!item) return;
+        const owned = state.inventory.owned.includes(key) || state.inventory.pet === item.pet;
+        const active = (item.pet && state.inventory.pet === item.pet) ||
+                       (item.accessory && state.inventory.equipped[item.slot] === item.key);
+        button.classList.toggle("owned",  owned);
         button.classList.toggle("active", active);
-        button.disabled = state.coins < item.price && !(owned && item.category !== "food");
+        const canAfford = state.coins >= item.price;
+        button.disabled = !canAfford && !(owned && item.category !== "food");
+
+        // Update the "差X元" label live
+        let needSpan = button.querySelector(".item-need");
+        if (!owned && !canAfford && item.price > 0) {
+          const deficit = Math.ceil(item.price - state.coins);
+          if (!needSpan) {
+            needSpan = document.createElement("span");
+            needSpan.className = "item-need";
+            button.appendChild(needSpan);
+          }
+          needSpan.textContent = `差 ${deficit} 元`;
+        } else if (needSpan) {
+          needSpan.remove();
+        }
       });
       renderParentDashboard();
     }
 
+    /* ── Event listeners ──────────────────────────── */
     document.querySelectorAll(".mode").forEach(button => {
       button.addEventListener("click", () => {
-        document.querySelectorAll(".mode").forEach(mode => mode.classList.remove("active"));
+        document.querySelectorAll(".mode").forEach(m => m.classList.remove("active"));
         button.classList.add("active");
         state.mode = button.dataset.mode;
         pickQuestion();
@@ -1826,19 +2153,17 @@
 
     document.querySelectorAll(".challenge-tab").forEach(button => {
       button.addEventListener("click", () => {
-        document.querySelectorAll(".challenge-tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".challenge-tab").forEach(t => t.classList.remove("active"));
         button.classList.add("active");
         state.challengeType = button.dataset.challenge;
-        if (document.body.dataset.view === "challenge") {
-          buildChallengePools();
-        }
+        if (document.body.dataset.view === "challenge") buildChallengePools();
       });
     });
 
     document.querySelectorAll(".view-tab").forEach(button => {
       button.addEventListener("click", () => {
         document.body.dataset.view = button.dataset.view;
-        document.querySelectorAll(".view-tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
         button.classList.add("active");
         state.challengeMode = button.dataset.view === "challenge";
         if (state.challengeMode) {
@@ -1861,7 +2186,7 @@
     });
 
     el.finishReview.addEventListener("click", () => {
-      addBadge("看完生字卡");
+      addBadge("看完生字卡 📖");
       if (state.challengeMode && state.challengeType === "bubble") {
         buildChallengePools();
         return;
@@ -1869,10 +2194,17 @@
       setPracticeLocked(false);
     });
 
-    el.reloadDaily.addEventListener("click", () => {
-      buildPools();
-      pickQuestion();
+    el.goChallenge.addEventListener("click", () => {
+      // Jump straight to the challenge tab without needing to finish review
+      document.body.dataset.view = "challenge";
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelector(".view-tab[data-view='challenge']").classList.add("active");
+      state.challengeMode = true;
+      el.reviewGate.hidden = true;
+      buildChallengePools();
     });
+
+    el.reloadDaily.addEventListener("click", () => { buildPools(); pickQuestion(); });
 
     el.practiceDate.addEventListener("change", () => {
       buildPools();
@@ -1881,16 +2213,19 @@
     });
 
     el.clearHistory.addEventListener("click", () => {
-      state.coins = 0;
-      state.stats = { hunger: 55, happy: 55, clean: 55 };
+      state.coins     = 0;
+      state.streak    = 0;
+      state.stats     = { hunger: 55, happy: 55, clean: 55 };
       state.inventory = { pet: "dog", accessories: [], equipped: {}, owned: [], ownedPets: ["dog"] };
-      state.petStats = { dog: { hunger: 55, happy: 55, clean: 55 } };
-      state.history = {};
+      state.petStats  = { dog: { hunger: 55, happy: 55, clean: 55 } };
+      state.history   = {};
       saveProgress();
       applyInventory();
+      renderStreak();
       updateUi();
     });
 
+    /* ── Boot ─────────────────────────────────────── */
     const scheduleDates = Object.keys(DATA.schedule).sort();
     el.practiceDate.min = scheduleDates[0];
     el.practiceDate.max = scheduleDates[scheduleDates.length - 1];
