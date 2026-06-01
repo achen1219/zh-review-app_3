@@ -398,7 +398,12 @@
     @keyframes cloudDrift1 { from { transform: translateX(-220px); } to { transform: translateX(calc(100vw + 220px)); } }
     @keyframes cloudDrift2 { from { transform: translateX(calc(100vw + 220px)); } to { transform: translateX(-220px); } }
 
-    /* ─── Emoji pet (large emoji + absolute accessories) ─ */
+    /* ─── Emoji pet ──────────────────────────────────────
+       Layout: column flex so clothes + shoes sit naturally
+       BELOW the face emoji (face-only emojis fill the whole
+       square — overlaying a shirt on them covers the face).
+       Hat and toy stay absolutely positioned (above / beside).
+    ─────────────────────────────────────────────────────── */
     .pet {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; align-items: center;
@@ -412,70 +417,71 @@
       50%     { transform: translateY(-12px) rotate(1deg); }
     }
 
-    /* Figure: a relative container so accessories can be absolute */
+    /* Relative container so hat & toy can be absolute */
     .pet-figure {
       position: relative;
-      display: inline-block;
-      line-height: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* The main emoji — big and clear */
+    /* Big face emoji — 9rem so each animal is clearly distinct */
     .pet-emoji {
       font-size: 9rem;
       line-height: 1;
-      display: block;
       user-select: none;
     }
 
-    /* All accessories: absolutely positioned over the emoji */
-    .pet-acc {
-      position: absolute;
-      pointer-events: none;
-      user-select: none;
-      line-height: 1;
-      text-align: center;
-    }
-
-    /* Hat/crown: floats just above the top of the emoji */
+    /* Hat/crown: floats above the emoji head */
     .pet-acc-head {
+      position: absolute;
       top: -0.45em;
       left: 50%;
       transform: translateX(-50%);
       font-size: 2.6rem;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
       white-space: nowrap;
     }
 
-    /* Clothes: centred in the lower-middle area of the emoji (body zone) */
-    .pet-acc-body {
-      bottom: 0.05em;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 2.4rem;
-      white-space: nowrap;
-    }
-
-    /* Shoes: just below the bottom of the emoji */
-    .pet-acc-feet {
-      bottom: -1.3em;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.9rem;
-      letter-spacing: 4px;
-      white-space: nowrap;
-    }
-
-    /* Toy: held to the right side of the emoji */
+    /* Toy: held beside the emoji */
     .pet-acc-toy {
-      right: -1.4em;
-      top: 30%;
+      position: absolute;
+      right: -1.5em;
+      top: 25%;
       font-size: 2.6rem;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
     }
 
-    /* Mood: below the whole figure (needs extra top margin for feet) */
+    /* Clothes: normal flow, directly below the emoji face */
+    .pet-acc-body {
+      font-size: 2.4rem;
+      line-height: 1;
+      margin-top: 2px;
+      min-height: 1em;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Shoes: normal flow, below clothes */
+    .pet-acc-feet {
+      font-size: 2rem;
+      line-height: 1;
+      margin-top: 2px;
+      min-height: 1em;
+      letter-spacing: 8px;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Mood: below shoes */
     .pet-mood {
       font-size: 1.8rem;
       line-height: 1;
-      margin-top: 1.6em;
+      margin-top: 4px;
       user-select: none;
     }
 
@@ -721,14 +727,19 @@
             </div>
           </div>
 
-          <!-- Emoji pet: one large emoji + absolutely-positioned accessories -->
+          <!-- Emoji pet: face emoji + clothes/shoes in column below -->
           <div id="pet" class="pet" role="img" aria-label="小寵物">
             <div class="pet-figure">
-              <div id="accessoryHead" class="pet-acc pet-acc-head"></div>
-              <div id="petEmoji"      class="pet-emoji">🐶</div>
-              <div id="accessoryBody" class="pet-acc pet-acc-body"></div>
-              <div id="accessoryFeet" class="pet-acc pet-acc-feet"></div>
-              <div id="accessoryToy"  class="pet-acc pet-acc-toy"></div>
+              <!-- Hat: absolute, floats above the emoji head -->
+              <div id="accessoryHead" class="pet-acc-head"></div>
+              <!-- Big face emoji -->
+              <div id="petEmoji" class="pet-emoji">🐶</div>
+              <!-- Toy: absolute, held to the side -->
+              <div id="accessoryToy"  class="pet-acc-toy"></div>
+              <!-- Clothes: normal flow, below the face -->
+              <div id="accessoryBody" class="pet-acc-body"></div>
+              <!-- Shoes: normal flow, below clothes -->
+              <div id="accessoryFeet" class="pet-acc-feet"></div>
             </div>
             <div id="petMood" class="pet-mood">😊</div>
           </div>
@@ -1363,11 +1374,10 @@
       resetRoundUi();
       if (state.challengeMode && state.challengeType === "bubble") return showBubblePop();
       if (state.challengeMode && state.challengeType === "match")  return showMatchingGame();
-      // Daily practice + 快問快答 challenge: random mode (matching included occasionally)
+      // Daily practice + 快問快答 challenge: rotate between text-based modes only
+      // (配對遊戲 is its own dedicated challenge tab — not mixed in here)
       const modes = ["charMeaning","phraseMeaning","sentenceBlank"];
-      if (state.words.length >= 4) modes.push("match");
       state.mode = sample(modes, 1)[0];
-      if (state.mode === "match")         return showMatchingGame();
       if (state.mode === "charMeaning")   return showCharMeaning();
       if (state.mode === "phraseMeaning") return showPhraseMeaning();
       showSentenceBlank();
