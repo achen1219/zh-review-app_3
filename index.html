@@ -493,40 +493,48 @@
       height: 210px;
     }
 
-    /* Hat above head (~5% from top) */
-    .pet-figure.img-mode .pet-acc-head {
-      top: 0px;
-      font-size: 1.8rem;
+    /* Drop-shadow on all image-mode accessories so they stand out */
+    .pet-figure.img-mode .pet-acc-head,
+    .pet-figure.img-mode .pet-acc-body,
+    .pet-figure.img-mode .pet-acc-feet,
+    .pet-figure.img-mode .pet-acc-toy {
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.35));
     }
 
-    /* Clothes at chest level (~44% down) */
+    /* Hat: just above the crown */
+    .pet-figure.img-mode .pet-acc-head {
+      top: -6px;
+      font-size: 2.4rem;
+    }
+
+    /* Clothes: belly/chest (~50% down) */
     .pet-figure.img-mode .pet-acc-body {
       position: absolute;
-      top: 44%;
+      top: 50%;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 1.6rem;
+      font-size: 2.2rem;
       margin: 0;
       min-height: 0;
     }
 
-    /* Shoes at paw level (~78% down) */
+    /* Shoes: feet level (~83% down) */
     .pet-figure.img-mode .pet-acc-feet {
       position: absolute;
-      top: 78%;
+      top: 83%;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 1.4rem;
+      font-size: 2rem;
       margin: 0;
       min-height: 0;
-      letter-spacing: 4px;
+      letter-spacing: 8px;
     }
 
-    /* Toy at side, ~38% down */
+    /* Toy: held to the side at body level (~42% down) */
     .pet-figure.img-mode .pet-acc-toy {
-      right: -1.2em;
-      top: 38%;
-      font-size: 2rem;
+      right: -1.4em;
+      top: 42%;
+      font-size: 2.2rem;
     }
 
     /* Mood: below shoes */
@@ -1850,7 +1858,7 @@
     }
 
     /* ── Pets that have a custom full-body PNG ─────────── */
-    const PETS_WITH_IMAGES = new Set(["dog", "panda"]);
+    const PETS_WITH_IMAGES = new Set(["panda"]);
 
     /* ── Apply inventory visuals ──────────────────────── */
     function applyInventory() {
