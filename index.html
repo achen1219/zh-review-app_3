@@ -398,67 +398,86 @@
     @keyframes cloudDrift1 { from { transform: translateX(-220px); } to { transform: translateX(calc(100vw + 220px)); } }
     @keyframes cloudDrift2 { from { transform: translateX(calc(100vw + 220px)); } to { transform: translateX(-220px); } }
 
-    /* ─── Pet body (face + torso + feet) ─────────────── */
+    /* ─── Emoji pet (large emoji + absolute accessories) ─ */
     .pet {
       position: relative; z-index: 2;
-      display: flex; flex-direction: column; align-items: center; gap: 0;
+      display: flex; flex-direction: column; align-items: center;
       transform-origin: bottom center;
       animation: bounce 2.3s ease-in-out infinite;
-      filter: drop-shadow(0 12px 14px rgba(31,41,51,.22));
+      filter: drop-shadow(0 12px 18px rgba(31,41,51,.25));
     }
 
     @keyframes bounce {
       0%,100% { transform: translateY(0) rotate(-1deg); }
-      50%     { transform: translateY(-10px) rotate(1deg); }
+      50%     { transform: translateY(-12px) rotate(1deg); }
     }
 
-    /* Hat zone */
-    .hat-zone { min-height: 36px; display: flex; align-items: flex-end; justify-content: center; }
-    .acc-head-item { font-size: 2.2rem; line-height: 1; user-select: none; }
-
-    /* Face row */
-    .pet-face-row { display: flex; align-items: center; gap: 8px; }
-
-    /* Face circle */
-    .pet-face-circle {
-      width: 112px; height: 112px; border-radius: 50%;
-      background: #f4a261; border: 4px solid #9a5f36;
-      display: grid; place-items: center;
-      box-shadow: inset 0 -8px 14px rgba(0,0,0,.13), 0 6px 10px rgba(0,0,0,.12);
-      transition: background .3s, border-color .3s;
+    /* Figure: a relative container so accessories can be absolute */
+    .pet-figure {
+      position: relative;
+      display: inline-block;
+      line-height: 1;
     }
 
-    .pet-emoji { font-size: 4.5rem; line-height: 1; user-select: none; }
-
-    /* Toy slot */
-    .acc-toy-item { font-size: 2.2rem; line-height: 1; min-width: 2.4rem; user-select: none; }
-
-    /* Body (torso) */
-    .pet-body-rect {
-      width: 88px; min-height: 66px;
-      background: #f4a261; border: 4px solid #9a5f36;
-      border-radius: 22px; margin-top: -10px;
-      display: grid; place-items: center;
-      box-shadow: inset 0 -6px 10px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.1);
-      transition: background .3s, border-color .3s;
+    /* The main emoji — big and clear */
+    .pet-emoji {
+      font-size: 9rem;
+      line-height: 1;
+      display: block;
+      user-select: none;
     }
 
-    .acc-body-item { font-size: 2rem; line-height: 1; user-select: none; }
-
-    /* Feet */
-    .pet-feet-rect {
-      width: 102px; height: 38px;
-      background: #f4a261; border: 4px solid #9a5f36;
-      border-radius: 12px; margin-top: -6px;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      box-shadow: 0 4px 8px rgba(0,0,0,.1);
-      transition: background .3s, border-color .3s;
+    /* All accessories: absolutely positioned over the emoji */
+    .pet-acc {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      text-align: center;
     }
 
-    .acc-feet-item { font-size: 1.5rem; line-height: 1; letter-spacing: 2px; user-select: none; }
+    /* Hat/crown: floats just above the top of the emoji */
+    .pet-acc-head {
+      top: -0.45em;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.6rem;
+      white-space: nowrap;
+    }
 
-    /* Mood */
-    .pet-mood { font-size: 1.7rem; line-height: 1; margin-top: 5px; user-select: none; }
+    /* Clothes: centred in the lower-middle area of the emoji (body zone) */
+    .pet-acc-body {
+      bottom: 0.05em;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.4rem;
+      white-space: nowrap;
+    }
+
+    /* Shoes: just below the bottom of the emoji */
+    .pet-acc-feet {
+      bottom: -1.3em;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.9rem;
+      letter-spacing: 4px;
+      white-space: nowrap;
+    }
+
+    /* Toy: held to the right side of the emoji */
+    .pet-acc-toy {
+      right: -1.4em;
+      top: 30%;
+      font-size: 2.6rem;
+    }
+
+    /* Mood: below the whole figure (needs extra top margin for feet) */
+    .pet-mood {
+      font-size: 1.8rem;
+      line-height: 1;
+      margin-top: 1.6em;
+      user-select: none;
+    }
 
     /* ─── Stats ───────────────────────────────────────── */
     .stats { padding: 14px; display: grid; gap: 12px; }
@@ -586,10 +605,7 @@
     @media (max-width: 480px) {
       .answers { grid-template-columns: 1fr; }
       .shop { grid-template-columns: repeat(3, minmax(0,1fr)); }
-      .pet-face-circle { width: 90px; height: 90px; }
-      .pet-emoji { font-size: 3.6rem; }
-      .pet-body-rect { width: 72px; }
-      .pet-feet-rect { width: 82px; }
+      .pet-emoji { font-size: 7rem; }
     }
   </style>
 </head>
@@ -705,22 +721,14 @@
             </div>
           </div>
 
-          <!-- Emoji pet with distinct head, body, feet zones -->
+          <!-- Emoji pet: one large emoji + absolutely-positioned accessories -->
           <div id="pet" class="pet" role="img" aria-label="小寵物">
-            <div class="hat-zone">
-              <div id="accessoryHead" class="acc-head-item"></div>
-            </div>
-            <div class="pet-face-row">
-              <div id="petFaceCircle" class="pet-face-circle">
-                <div id="petEmoji" class="pet-emoji">🐶</div>
-              </div>
-              <div id="accessoryToy" class="acc-toy-item"></div>
-            </div>
-            <div id="petBodyRect" class="pet-body-rect">
-              <div id="accessoryBody" class="acc-body-item"></div>
-            </div>
-            <div id="petFeetRect" class="pet-feet-rect">
-              <div id="accessoryFeet" class="acc-feet-item"></div>
+            <div class="pet-figure">
+              <div id="accessoryHead" class="pet-acc pet-acc-head"></div>
+              <div id="petEmoji"      class="pet-emoji">🐶</div>
+              <div id="accessoryBody" class="pet-acc pet-acc-body"></div>
+              <div id="accessoryFeet" class="pet-acc pet-acc-feet"></div>
+              <div id="accessoryToy"  class="pet-acc pet-acc-toy"></div>
             </div>
             <div id="petMood" class="pet-mood">😊</div>
           </div>
@@ -877,9 +885,6 @@
       shopTabs:        document.querySelector("#shopTabs"),
       shop:            document.querySelector("#shop"),
       petEmoji:        document.querySelector("#petEmoji"),
-      petFaceCircle:   document.querySelector("#petFaceCircle"),
-      petBodyRect:     document.querySelector("#petBodyRect"),
-      petFeetRect:     document.querySelector("#petFeetRect"),
       petMood:         document.querySelector("#petMood"),
       accessoryHead:   document.querySelector("#accessoryHead"),
       accessoryBody:   document.querySelector("#accessoryBody"),
@@ -1781,17 +1786,9 @@
     /* ── Apply inventory visuals ──────────────────────── */
     function applyInventory() {
       const petKey = state.inventory.pet || "dog";
-      const color  = petColors[petKey] || petColors.dog;
-      // Update pet body colors
-      el.petFaceCircle.style.background  = color.bg;
-      el.petFaceCircle.style.borderColor = color.border;
-      el.petBodyRect.style.background    = color.bg;
-      el.petBodyRect.style.borderColor   = color.border;
-      el.petFeetRect.style.background    = color.bg;
-      el.petFeetRect.style.borderColor   = color.border;
-      // Update emoji
+      // Show the correct animal emoji (big and clear)
       el.petEmoji.textContent = petEmojis[petKey] || "🐶";
-      // Update accessories in correct slots
+      // Position accessories over the emoji
       const eq = state.inventory.equipped || {};
       el.accessoryHead.textContent = shop[eq.head]?.accessory || "";
       el.accessoryBody.textContent = shop[eq.body]?.accessory || "";
