@@ -432,6 +432,16 @@
       user-select: none;
     }
 
+    /* Custom pet image */
+    .pet-img {
+      height: 210px;
+      width: auto;
+      display: block;
+      user-select: none;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
     /* Hat/crown: floats above the emoji head */
     .pet-acc-head {
       position: absolute;
@@ -475,6 +485,48 @@
       letter-spacing: 8px;
       text-align: center;
       user-select: none;
+    }
+
+    /* ── Image-mode: pet-figure has fixed size, all accessories absolute ── */
+    .pet-figure.img-mode {
+      width: 150px;
+      height: 210px;
+    }
+
+    /* Hat above head (~5% from top) */
+    .pet-figure.img-mode .pet-acc-head {
+      top: 0px;
+      font-size: 1.8rem;
+    }
+
+    /* Clothes at chest level (~44% down) */
+    .pet-figure.img-mode .pet-acc-body {
+      position: absolute;
+      top: 44%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.6rem;
+      margin: 0;
+      min-height: 0;
+    }
+
+    /* Shoes at paw level (~78% down) */
+    .pet-figure.img-mode .pet-acc-feet {
+      position: absolute;
+      top: 78%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4rem;
+      margin: 0;
+      min-height: 0;
+      letter-spacing: 4px;
+    }
+
+    /* Toy at side, ~38% down */
+    .pet-figure.img-mode .pet-acc-toy {
+      right: -1.2em;
+      top: 38%;
+      font-size: 2rem;
     }
 
     /* Mood: below shoes */
@@ -727,18 +779,20 @@
             </div>
           </div>
 
-          <!-- Emoji pet: face emoji + clothes/shoes in column below -->
+          <!-- Pet display: image mode (custom PNG) or emoji mode fallback -->
           <div id="pet" class="pet" role="img" aria-label="小寵物">
-            <div class="pet-figure">
-              <!-- Hat: absolute, floats above the emoji head -->
+            <div id="petFigure" class="pet-figure">
+              <!-- Hat: absolute, floats above head -->
               <div id="accessoryHead" class="pet-acc-head"></div>
-              <!-- Big face emoji -->
+              <!-- Custom image pet (shown when PNG available) -->
+              <img id="petImg" class="pet-img" src="" alt="pet" hidden>
+              <!-- Emoji pet fallback -->
               <div id="petEmoji" class="pet-emoji">🐶</div>
               <!-- Toy: absolute, held to the side -->
               <div id="accessoryToy"  class="pet-acc-toy"></div>
-              <!-- Clothes: normal flow, below the face -->
+              <!-- Clothes: normal flow (emoji) or absolute (image) -->
               <div id="accessoryBody" class="pet-acc-body"></div>
-              <!-- Shoes: normal flow, below clothes -->
+              <!-- Shoes: normal flow (emoji) or absolute (image) -->
               <div id="accessoryFeet" class="pet-acc-feet"></div>
             </div>
             <div id="petMood" class="pet-mood">😊</div>
@@ -895,6 +949,8 @@
       shopBanner:      document.querySelector("#shopBanner"),
       shopTabs:        document.querySelector("#shopTabs"),
       shop:            document.querySelector("#shop"),
+      petImg:          document.querySelector("#petImg"),
+      petFigure:       document.querySelector("#petFigure"),
       petEmoji:        document.querySelector("#petEmoji"),
       petMood:         document.querySelector("#petMood"),
       accessoryHead:   document.querySelector("#accessoryHead"),
@@ -1793,12 +1849,26 @@
       });
     }
 
+    /* ── Pets that have a custom full-body PNG ─────────── */
+    const PETS_WITH_IMAGES = new Set(["dog"]);
+
     /* ── Apply inventory visuals ──────────────────────── */
     function applyInventory() {
       const petKey = state.inventory.pet || "dog";
-      // Show the correct animal emoji (big and clear)
-      el.petEmoji.textContent = petEmojis[petKey] || "🐶";
-      // Position accessories over the emoji
+      if (PETS_WITH_IMAGES.has(petKey)) {
+        // Image mode: show PNG, hide emoji, activate abs positioning
+        el.petImg.src = `images/pets/${petKey}.png`;
+        el.petImg.hidden = false;
+        el.petEmoji.hidden = true;
+        el.petFigure.classList.add("img-mode");
+      } else {
+        // Emoji mode: show face emoji, hide image
+        el.petImg.hidden = true;
+        el.petEmoji.hidden = false;
+        el.petEmoji.textContent = petEmojis[petKey] || "🐶";
+        el.petFigure.classList.remove("img-mode");
+      }
+      // Accessories (work in both modes)
       const eq = state.inventory.equipped || {};
       el.accessoryHead.textContent = shop[eq.head]?.accessory || "";
       el.accessoryBody.textContent = shop[eq.body]?.accessory || "";
