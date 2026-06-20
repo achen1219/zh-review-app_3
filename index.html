@@ -334,6 +334,26 @@
 
     .bubble-arena.show { display: block; }
 
+    /* ─── Bubble start gate ──────────────────────────── */
+    .bubble-start {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      min-height: 300px; margin-top: 14px; padding: 30px;
+      border: 1.5px solid var(--line); border-radius: var(--r);
+      background: linear-gradient(180deg, #bae6fd 0%, #ecfdf5 60%, #fef9c3 100%);
+      text-align: center;
+    }
+
+    .bubble-start-icon { font-size: 4rem; }
+
+    .bubble-start-text { font-weight: 800; color: var(--ink); font-size: 1.1rem; }
+
+    .bubble-start-button {
+      padding: 14px 36px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-dk));
+      color: #fff; font-weight: 900; font-size: 1.15rem;
+      box-shadow: var(--shadow);
+    }
+
     .bubble {
       position: absolute; width: 80px; aspect-ratio: 1; border-radius: 50%;
       border: 3px solid transparent;
@@ -739,6 +759,11 @@
         </div>
 
         <div id="answers" class="answers"></div>
+        <div id="bubbleStart" class="bubble-start" hidden>
+          <div class="bubble-start-icon">🫧</div>
+          <div class="bubble-start-text">準備好了嗎？打中指定的字，注意不要打錯！</div>
+          <button id="bubbleStartBtn" class="bubble-start-button">▶️ 開始遊戲</button>
+        </div>
         <div id="bubbleArena" class="bubble-arena" aria-label="泡泡快打"></div>
         <div id="matchArena" class="match-arena" hidden>
           <div id="matchLeft"  class="match-col"></div>
@@ -930,6 +955,8 @@
       timerRow:        document.querySelector("#timerRow"),
       timer:           document.querySelector("#timer"),
       bubbleArena:     document.querySelector("#bubbleArena"),
+      bubbleStart:     document.querySelector("#bubbleStart"),
+      bubbleStartBtn:  document.querySelector("#bubbleStartBtn"),
       matchArena:      document.querySelector("#matchArena"),
       matchLeft:       document.querySelector("#matchLeft"),
       matchRight:      document.querySelector("#matchRight"),
@@ -1424,6 +1451,7 @@
       el.answers.innerHTML     = "";
       el.bubbleArena.innerHTML = "";
       el.bubbleArena.classList.remove("show");
+      el.bubbleStart.hidden = true;
       el.timerRow.hidden  = true;
       el.matchArena.hidden = true;
       el.matchScore.hidden = true;
@@ -1436,7 +1464,11 @@
     function pickQuestion() {
       if (!state.reviewComplete && !state.challengeMode) return;
       resetRoundUi();
-      if (state.challengeMode && state.challengeType === "bubble") return showBubblePop();
+      if (state.challengeMode && state.challengeType === "bubble") {
+        document.querySelector(".question").hidden = true;
+        el.bubbleStart.hidden = false;
+        return;
+      }
       if (state.challengeMode && state.challengeType === "match")  return showMatchingGame();
       // Daily practice + 快問快答 challenge: rotate between text-based modes only
       // (配對遊戲 is its own dedicated challenge tab — not mixed in here)
@@ -1592,6 +1624,8 @@
 
     /* ── Bubble pop ───────────────────────────────────── */
     function showBubblePop() {
+      el.bubbleStart.hidden = true;
+      document.querySelector(".question").hidden = false;
       state.bubbleLives  = 3;
       state.bubbleMissed = [];
       state.timeLeft     = 10;
@@ -2001,6 +2035,8 @@
         pickQuestion();
       });
     });
+
+    el.bubbleStartBtn.addEventListener("click", () => { showBubblePop(); });
 
     document.querySelectorAll(".challenge-tab").forEach(button => {
       button.addEventListener("click", () => {
