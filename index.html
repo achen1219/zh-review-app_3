@@ -654,6 +654,45 @@
     .penalty-icon-big { font-size: 5rem; line-height: 1; margin-bottom: 16px; }
     .penalty-text { font-size: 1.1rem; font-weight: 800; line-height: 1.7; margin-bottom: 20px; color: var(--rose); }
 
+    /* ─── Cross-device sync ───────────────────────────── */
+    .sync-status {
+      text-align: right; margin: -10px 2px 14px; font-size: .85rem; font-weight: 800; color: var(--muted);
+    }
+
+    .sync-box { max-width: 440px; text-align: center; }
+    .sync-title { margin: 0 0 8px; font-size: 1.3rem; }
+    .sync-desc { color: var(--muted); font-weight: 700; margin: 0 0 18px; line-height: 1.5; }
+    .sync-section { margin-bottom: 16px; }
+
+    .sync-button {
+      padding: 12px 20px; border-radius: 999px; border: 2px solid var(--teal);
+      background: #fff; color: var(--teal-dk); font-weight: 900; font-size: 1rem;
+    }
+    .sync-button-primary { background: linear-gradient(135deg, var(--teal), var(--teal-dk)); color: #fff; border: none; width: 100%; }
+    .sync-button-text { background: none; border: none; color: var(--muted); font-weight: 700; text-decoration: underline; padding: 4px; }
+
+    .sync-code-display {
+      font-size: 2.2rem; font-weight: 900; letter-spacing: 6px; color: var(--teal-dk);
+      background: var(--teal-lt); border-radius: var(--r-sm); padding: 12px; margin: 10px 0;
+    }
+    .sync-hint { color: var(--muted); font-size: .9rem; margin: 0 0 14px; }
+
+    .sync-divider { color: var(--muted); font-weight: 800; margin: 14px 0; position: relative; }
+
+    .sync-join-row { display: flex; gap: 8px; }
+    .sync-input {
+      flex: 1; padding: 12px; border: 2px solid var(--line); border-radius: var(--r-sm);
+      font-size: 1.2rem; font-weight: 900; text-align: center; letter-spacing: 4px; text-transform: uppercase;
+    }
+    .sync-error { color: var(--rose); font-weight: 800; margin-top: 8px; font-size: .9rem; }
+
+    .family-code-box {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 10px 12px; margin-bottom: 4px; border: 1px solid var(--line); border-radius: var(--r-sm);
+      background: #fff; font-weight: 800;
+    }
+    .family-code-box strong { color: var(--teal-dk); letter-spacing: 2px; }
+
     /* ─── History / parent section ────────────────────── */
     .history { margin-top: 18px; padding: 14px; display: grid; gap: 8px; grid-column: 1 / -1; }
     .history h2 { margin: 0; font-size: 1.15rem; }
@@ -710,6 +749,7 @@
         <span><span id="coins">0</span> 元</span>
       </div>
     </header>
+    <div id="syncStatus" class="sync-status"></div>
 
     <nav class="app-tabs" aria-label="主要頁面">
       <button class="view-tab active" data-view="practice">📚 每日練習</button>
@@ -871,6 +911,12 @@
         <div id="badges" class="badges"><span class="badge">開始練習</span></div>
         <h2>📊 家長紀錄</h2>
         <button id="clearHistory" class="small-button">清除紀錄</button>
+        <div class="family-code-box">
+          <span>☁️ 家庭同步代碼：</span>
+          <strong id="familyCodeDisplay">未設定</strong>
+          <button id="copyFamilyCode" class="small-button" hidden>複製</button>
+          <button id="changeFamilyCode" class="small-button">設定／更換</button>
+        </div>
         <div id="parentStats" class="parent-grid"></div>
         <div id="historyList" class="history-list"></div>
       </section>
@@ -906,6 +952,55 @@
       <button id="closePenalty" class="small-button">我知道了，今天一定努力！</button>
     </div>
   </div>
+
+  <!-- Cross-device sync setup -->
+  <div id="syncOverlay" class="modal-overlay" hidden>
+    <div class="modal-box sync-box">
+      <h2 class="sync-title">☁️ 跨裝置同步</h2>
+      <p class="sync-desc">建立一個「家庭代碼」，就能在不同的手機、平板、電腦上看到一樣的進度！</p>
+
+      <div class="sync-section">
+        <button id="syncCreateBtn" class="sync-button sync-button-primary">✨ 建立新代碼（第一台裝置）</button>
+      </div>
+
+      <div class="sync-section" id="syncCreatedBox" hidden>
+        <p>你的家庭代碼是：</p>
+        <div class="sync-code-display" id="syncCreatedCode">------</div>
+        <p class="sync-hint">請記下這個代碼，在其他裝置上輸入它就能同步！</p>
+        <button id="syncCreatedDoneBtn" class="sync-button sync-button-primary">完成</button>
+      </div>
+
+      <div class="sync-divider">或</div>
+
+      <div class="sync-section">
+        <p>在其他裝置上輸入已有的代碼：</p>
+        <div class="sync-join-row">
+          <input id="syncJoinInput" class="sync-input" maxlength="6" placeholder="輸入代碼" autocapitalize="characters">
+          <button id="syncJoinBtn" class="sync-button">加入</button>
+        </div>
+        <div id="syncJoinError" class="sync-error" hidden></div>
+      </div>
+
+      <button id="syncDismissBtn" class="sync-button sync-button-text">暫時不要，只在這台裝置使用</button>
+    </div>
+  </div>
+
+  <!-- Firebase (cross-device sync) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyA7NyLX7hsWDxfiqH9RQuK_Oy4PvT4tkVA",
+      authDomain: "zh-review.firebaseapp.com",
+      projectId: "zh-review",
+      storageBucket: "zh-review.firebasestorage.app",
+      messagingSenderId: "18188986044",
+      appId: "1:18188986044:web:740e6ab437e31f51b752b9"
+    });
+    const fbAuth = firebase.auth();
+    const fbDb   = firebase.firestore();
+  </script>
 
   <script src="game-data.js"></script>
   <script src="confusable-data.js"></script>
@@ -1020,6 +1115,19 @@
       penaltyIconBig:  document.querySelector("#penaltyIconBig"),
       penaltyText:     document.querySelector("#penaltyText"),
       closePenalty:    document.querySelector("#closePenalty"),
+      syncStatus:        document.querySelector("#syncStatus"),
+      syncOverlay:       document.querySelector("#syncOverlay"),
+      syncCreateBtn:     document.querySelector("#syncCreateBtn"),
+      syncCreatedBox:     document.querySelector("#syncCreatedBox"),
+      syncCreatedCode:    document.querySelector("#syncCreatedCode"),
+      syncCreatedDoneBtn: document.querySelector("#syncCreatedDoneBtn"),
+      syncJoinInput:     document.querySelector("#syncJoinInput"),
+      syncJoinBtn:       document.querySelector("#syncJoinBtn"),
+      syncJoinError:     document.querySelector("#syncJoinError"),
+      syncDismissBtn:    document.querySelector("#syncDismissBtn"),
+      familyCodeDisplay: document.querySelector("#familyCodeDisplay"),
+      copyFamilyCode:    document.querySelector("#copyFamilyCode"),
+      changeFamilyCode:  document.querySelector("#changeFamilyCode"),
     };
 
     /* ── Shop categories ──────────────────────────────── */
@@ -1196,11 +1304,119 @@
       } catch { state.history = {}; }
     }
 
-    function saveProgress() {
-      localStorage.setItem("zhPetReviewProgress", JSON.stringify({
+    function progressPayload() {
+      return {
         coins: state.coins, stats: state.stats,
         petStats: state.petStats, inventory: state.inventory, history: state.history
-      }));
+      };
+    }
+
+    function saveProgress() {
+      localStorage.setItem("zhPetReviewProgress", JSON.stringify(progressPayload()));
+      scheduleCloudSave();
+    }
+
+    /* ── Cloud sync (Firebase) ─────────────────────────── */
+    const FAMILY_CODE_KEY  = "zhFamilyCode";
+    const SYNC_DISMISS_KEY = "zhSyncDismissed";
+    const LAST_SYNCED_KEY  = "zhLastSyncedAt";
+    const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I — easier to read aloud
+
+    function generateFamilyCode() {
+      let code = "";
+      for (let i = 0; i < 6; i++) code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+      return code;
+    }
+
+    function getFamilyCode() { return localStorage.getItem(FAMILY_CODE_KEY) || ""; }
+    function setFamilyCode(code) { localStorage.setItem(FAMILY_CODE_KEY, code); }
+
+    function setSyncStatus(text) { if (el.syncStatus) el.syncStatus.textContent = text; }
+
+    function updateFamilyCodeDisplay() {
+      const code = getFamilyCode();
+      el.familyCodeDisplay.textContent = code || "未設定";
+      el.copyFamilyCode.hidden = !code;
+    }
+
+    let cloudAuthPromise = null;
+    function ensureCloudAuth() {
+      if (fbAuth.currentUser) return Promise.resolve(fbAuth.currentUser);
+      cloudAuthPromise ||= fbAuth.signInAnonymously().then(cred => cred.user);
+      return cloudAuthPromise;
+    }
+
+    async function cloudLoad(code) {
+      await ensureCloudAuth();
+      const snap = await fbDb.collection("families").doc(code).get();
+      return snap.exists ? snap.data() : null;
+    }
+
+    async function cloudSaveNow(code, payload) {
+      await ensureCloudAuth();
+      await fbDb.collection("families").doc(code).set({
+        ...payload,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+
+    let cloudSaveTimer = null;
+    function scheduleCloudSave() {
+      const code = getFamilyCode();
+      if (!code) return;
+      clearTimeout(cloudSaveTimer);
+      setSyncStatus("⏳ 同步中…");
+      cloudSaveTimer = setTimeout(async () => {
+        try {
+          await cloudSaveNow(code, progressPayload());
+          localStorage.setItem(LAST_SYNCED_KEY, String(Date.now()));
+          setSyncStatus("☁️ 已同步");
+        } catch (e) {
+          setSyncStatus("📴 同步失敗，稍後再試");
+        }
+      }, 1200);
+    }
+
+    function adoptCloudData(cloud) {
+      state.coins     = cloud.coins ?? state.coins;
+      state.stats     = cloud.stats || state.stats;
+      state.inventory = cloud.inventory || state.inventory;
+      state.petStats  = cloud.petStats || state.petStats;
+      state.history   = cloud.history || state.history;
+      localStorage.setItem("zhPetReviewProgress", JSON.stringify(progressPayload()));
+      applyInventory();
+      renderShopTabs();
+      renderShop();
+      renderBadges();
+      renderParentDashboard();
+      updateUi();
+    }
+
+    async function syncFromCloudOnBoot() {
+      const code = getFamilyCode();
+      updateFamilyCodeDisplay();
+      if (!code) {
+        if (!localStorage.getItem(SYNC_DISMISS_KEY)) el.syncOverlay.hidden = false;
+        return;
+      }
+      setSyncStatus("⏳ 同步中…");
+      try {
+        const cloud = await cloudLoad(code);
+        if (cloud) {
+          const localTime = Number(localStorage.getItem(LAST_SYNCED_KEY) || 0);
+          const cloudTime  = cloud.updatedAt ? cloud.updatedAt.toMillis() : 0;
+          if (cloudTime > localTime) {
+            adoptCloudData(cloud);
+            localStorage.setItem(LAST_SYNCED_KEY, String(cloudTime));
+          }
+        } else {
+          await cloudSaveNow(code, progressPayload());
+          localStorage.setItem(LAST_SYNCED_KEY, String(Date.now()));
+        }
+        setSyncStatus("☁️ 已同步");
+      } catch (e) {
+        setSyncStatus("📴 離線模式");
+      }
     }
 
     function dayRecord(date = state.activeDate || todayKey()) {
@@ -2118,6 +2334,69 @@
 
     el.closePenalty.addEventListener("click", () => { el.penaltyOverlay.hidden = true; });
 
+    /* ── Sync UI handlers ─────────────────────────────── */
+    el.syncCreateBtn.addEventListener("click", async () => {
+      const code = generateFamilyCode();
+      setFamilyCode(code);
+      el.syncCreatedCode.textContent = code;
+      el.syncCreateBtn.hidden = true;
+      el.syncCreatedBox.hidden = false;
+      try {
+        await cloudSaveNow(code, progressPayload());
+        localStorage.setItem(LAST_SYNCED_KEY, String(Date.now()));
+      } catch (e) { /* will retry on next save */ }
+      updateFamilyCodeDisplay();
+    });
+
+    el.syncCreatedDoneBtn.addEventListener("click", () => {
+      el.syncOverlay.hidden = true;
+      setSyncStatus("☁️ 已同步");
+    });
+
+    el.syncJoinBtn.addEventListener("click", async () => {
+      const code = el.syncJoinInput.value.trim().toUpperCase();
+      el.syncJoinError.hidden = true;
+      if (!code) return;
+      setSyncStatus("⏳ 同步中…");
+      try {
+        const cloud = await cloudLoad(code);
+        if (!cloud) {
+          el.syncJoinError.textContent = "找不到這個代碼，請確認後再試一次。";
+          el.syncJoinError.hidden = false;
+          setSyncStatus("📴 離線模式");
+          return;
+        }
+        setFamilyCode(code);
+        adoptCloudData(cloud);
+        localStorage.setItem(LAST_SYNCED_KEY, String(cloud.updatedAt ? cloud.updatedAt.toMillis() : Date.now()));
+        updateFamilyCodeDisplay();
+        el.syncOverlay.hidden = true;
+        setSyncStatus("☁️ 已同步");
+      } catch (e) {
+        el.syncJoinError.textContent = "連線失敗，請檢查網路後再試一次。";
+        el.syncJoinError.hidden = false;
+        setSyncStatus("📴 離線模式");
+      }
+    });
+
+    el.syncDismissBtn.addEventListener("click", () => {
+      localStorage.setItem(SYNC_DISMISS_KEY, "1");
+      el.syncOverlay.hidden = true;
+    });
+
+    el.copyFamilyCode.addEventListener("click", () => {
+      const code = getFamilyCode();
+      if (code && navigator.clipboard) navigator.clipboard.writeText(code);
+    });
+
+    el.changeFamilyCode.addEventListener("click", () => {
+      el.syncCreateBtn.hidden = false;
+      el.syncCreatedBox.hidden = true;
+      el.syncJoinInput.value = "";
+      el.syncJoinError.hidden = true;
+      el.syncOverlay.hidden = false;
+    });
+
     /* ── Boot ─────────────────────────────────────────── */
     const scheduleDates = Object.keys(DATA.schedule).sort();
     el.practiceDate.min = scheduleDates[0];
@@ -2131,6 +2410,7 @@
     renderShop();
     renderBadges();
     updateUi();
+    syncFromCloudOnBoot();
   </script>
 </body>
 </html>
