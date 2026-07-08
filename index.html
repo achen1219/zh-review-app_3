@@ -485,8 +485,52 @@
     /* ─── Yard ────────────────────────────────────────── */
     .yard { min-height: 340px; position: relative; overflow: hidden; display: grid; place-items: center; }
 
-    .yard-sky   { position: absolute; inset: 0 0 42% 0; background: linear-gradient(180deg, #7dd3fc, #bae6fd 70%, #d4f0ff); }
-    .yard-ground{ position: absolute; inset: 58% 0 0 0; background: linear-gradient(180deg, #4ade80 0%, #22c55e 18%, #c9a66b 18%); }
+    .yard-sky {
+      position: absolute; inset: 0 0 42% 0;
+      background: linear-gradient(180deg, #60c8f8 0%, #9adcfc 55%, #d9f2ff 100%);
+    }
+
+    .yard-ground {
+      position: absolute; inset: 55% 0 0 0;
+      background:
+        repeating-linear-gradient(100deg, rgba(255,255,255,.07) 0 30px, transparent 30px 60px),
+        linear-gradient(180deg, #6ee7a0 0%, #3ecf74 50%, #22a054 100%);
+    }
+
+    .yard-hills {
+      position: absolute; left: 0; right: 0; top: 38%; height: 20%;
+      width: 100%; z-index: 0; display: block;
+    }
+
+    .yard-fence {
+      position: absolute; left: 0; right: 0; top: 47%; height: 58px;
+      width: 100%; z-index: 1; display: block;
+      filter: drop-shadow(0 3px 3px rgba(15,23,42,.12));
+    }
+
+    .yard-decor {
+      position: absolute; z-index: 1;
+      line-height: 1; pointer-events: none; user-select: none;
+      filter: drop-shadow(0 3px 4px rgba(15,23,42,.18));
+      animation: decorSway 4s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .yard-decor:nth-child(even) { animation-delay: -2s; }
+
+    @keyframes decorSway {
+      0%,100% { transform: rotate(-2.5deg); }
+      50%     { transform: rotate(2.5deg); }
+    }
+
+    .yard-butterfly { animation: butterflyFloat 7s ease-in-out infinite; }
+
+    @keyframes butterflyFloat {
+      0%,100% { transform: translate(0,0) rotate(-8deg); }
+      25%     { transform: translate(26px,-14px) rotate(8deg); }
+      50%     { transform: translate(52px,4px) rotate(-6deg); }
+      75%     { transform: translate(20px,14px) rotate(10deg); }
+    }
 
     .sun {
       position: absolute; top: 16px; right: 50px; width: 52px; height: 52px;
@@ -514,6 +558,7 @@
     ─────────────────────────────────────────────────────── */
     .pet {
       position: relative; z-index: 2;
+      margin-top: 44px;
       display: flex; flex-direction: column; align-items: center;
       transform-origin: bottom center;
       animation: bounce 2.3s ease-in-out infinite;
@@ -677,10 +722,10 @@
     .shop { padding: 0 14px 14px; display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; }
 
     .item {
-      position: relative; min-height: 90px; border-radius: var(--r-sm);
+      position: relative; min-height: 118px; border-radius: var(--r);
       border: 1.5px solid var(--line); background: #fff;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 4px; padding: 10px 8px; font-weight: 700;
+      gap: 5px; padding: 12px 8px; font-weight: 700;
       box-shadow: var(--shadow-sm);
       transition: transform .14s, box-shadow .14s, border-color .14s; cursor: pointer;
     }
@@ -696,9 +741,24 @@
 
     .item.active { border-color: var(--teal); background: linear-gradient(135deg, var(--teal-lt), #d4f4f0); box-shadow: 0 0 0 3px rgba(23,126,137,.2); }
 
-    .item-icon { font-size: 2rem; line-height: 1; }
-    .price { color: var(--gold); font-size: .88rem; }
-    .item-boost { font-size: .78rem; color: var(--teal); font-weight: 700; }
+    .item-icon {
+      font-size: 1.9rem; line-height: 1;
+      width: 54px; height: 54px;
+      display: grid; place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #f0fdfa, #dcf5f0);
+      border: 1px solid rgba(13,148,136,.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .item[data-cat="food"] .item-icon { background: linear-gradient(160deg, #fffbeb, #fdeeba); border-color: rgba(217,119,6,.22); }
+    .item[data-cat="bath"] .item-icon { background: linear-gradient(160deg, #f0f9ff, #d8edfd); border-color: rgba(37,99,235,.18); }
+    .item[data-cat="toys"] .item-icon { background: linear-gradient(160deg, #faf5ff, #eddefc); border-color: rgba(124,58,237,.18); }
+    .item[data-cat="clothes"] .item-icon { background: linear-gradient(160deg, #fff1f2, #fcdee2); border-color: rgba(225,29,72,.16); }
+    .item[data-cat="shoes"] .item-icon { background: linear-gradient(160deg, #f0fdf4, #d3f5df); border-color: rgba(22,163,74,.2); }
+
+    .price { color: var(--gold); font-size: .88rem; font-weight: 800; }
+    .item-boost { font-size: .78rem; color: var(--teal-dk); font-weight: 700; }
 
     /* ─── Shop earn-coins banner ─────────────────────── */
     .shop-banner {
@@ -1029,6 +1089,33 @@
               <div style="position:absolute;width:30px;height:30px;border-radius:50%;background:inherit;top:-12px;left:50px;"></div>
             </div>
           </div>
+
+          <svg class="yard-hills" viewBox="0 0 800 120" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 120 L0 72 Q190 8 420 60 T800 52 L800 120 Z" fill="#8ceeb4"/>
+            <path d="M0 120 L0 98 Q260 42 520 90 T800 82 L800 120 Z" fill="#5fdd8f"/>
+          </svg>
+
+          <svg class="yard-fence" viewBox="0 0 800 60" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="0" y="14" width="800" height="7" rx="3.5" fill="#fdfaf3"/>
+            <rect x="0" y="34" width="800" height="7" rx="3.5" fill="#fdfaf3"/>
+            <g fill="#fffdf8">
+              <path d="M18 8 L25 2 L32 8 V56 H18 Z"/><path d="M82 8 L89 2 L96 8 V56 H82 Z"/>
+              <path d="M146 8 L153 2 L160 8 V56 H146 Z"/><path d="M210 8 L217 2 L224 8 V56 H210 Z"/>
+              <path d="M274 8 L281 2 L288 8 V56 H274 Z"/><path d="M338 8 L345 2 L352 8 V56 H338 Z"/>
+              <path d="M402 8 L409 2 L416 8 V56 H402 Z"/><path d="M466 8 L473 2 L480 8 V56 H466 Z"/>
+              <path d="M530 8 L537 2 L544 8 V56 H530 Z"/><path d="M594 8 L601 2 L608 8 V56 H594 Z"/>
+              <path d="M658 8 L665 2 L672 8 V56 H658 Z"/><path d="M722 8 L729 2 L736 8 V56 H722 Z"/>
+              <path d="M786 8 L793 2 L800 8 V56 H786 Z"/>
+            </g>
+          </svg>
+
+          <span class="yard-decor" style="left:2%; bottom:32%; font-size:3.6rem;">🌳</span>
+          <span class="yard-decor" style="right:1%; bottom:34%; font-size:3rem;">🌳</span>
+          <span class="yard-decor" style="left:7%; bottom:8%;  font-size:2rem;">🌷</span>
+          <span class="yard-decor" style="left:16%; bottom:20%; font-size:1.4rem;">🌼</span>
+          <span class="yard-decor" style="right:9%; bottom:10%; font-size:2.1rem;">🌻</span>
+          <span class="yard-decor" style="right:20%; bottom:24%; font-size:1.4rem;">🌼</span>
+          <span class="yard-decor yard-butterfly" style="left:22%; top:30%; font-size:1.3rem;">🦋</span>
 
           <!-- Pet display: image mode (custom PNG) or emoji mode fallback -->
           <div id="pet" class="pet" role="img" aria-label="小寵物">
@@ -2378,6 +2465,7 @@
         const button   = document.createElement("button");
         button.className = "item";
         button.dataset.buy = key;
+        button.dataset.cat = item.category;
 
         let boostHtml = "";
         if (item.category === "food")      boostHtml = `<span class="item-boost">+${item.amount} 肚子</span>`;
