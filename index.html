@@ -9,8 +9,14 @@
   <meta property="og:description" content="答對中文題目賺錢，照顧自己的小寵物！生字卡、快問快答、泡泡快打、配對遊戲。">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="中文練習">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="./fonts/ToneOZ-Zhuyin-Tsuipita-TC.woff2" as="font" type="font/woff2" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <title>小寵物中文練習店</title>
   <style>
@@ -812,6 +818,46 @@
       100% { opacity: 0; transform: translateY(90vh) rotate(720deg) translateX(var(--drift)); }
     }
 
+    /* ─── Splash screen ───────────────────────────────── */
+    #splash {
+      position: fixed; inset: 0; z-index: 2000;
+      display: grid; place-items: center;
+      background: var(--paper);
+      transition: opacity .4s ease;
+    }
+
+    #splash.done { opacity: 0; pointer-events: none; }
+
+    .splash-inner { display: grid; justify-items: center; gap: 16px; text-align: center; }
+
+    .splash-mark {
+      width: 84px; height: 84px; border-radius: 24px;
+      display: grid; place-items: center; font-size: 2.6rem;
+      background: linear-gradient(135deg, var(--teal-lt), #e6fffa);
+      border: 1px solid rgba(13,148,136,.25);
+      box-shadow: var(--shadow-lg);
+      animation: splashBob 1.6s ease-in-out infinite;
+    }
+
+    @keyframes splashBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    .splash-title { font-weight: 900; font-size: 1.25rem; color: var(--teal-dk); }
+
+    .splash-spinner {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 3px solid var(--teal-lt); border-top-color: var(--teal);
+      animation: splashSpin .8s linear infinite;
+    }
+
+    @keyframes splashSpin { to { transform: rotate(360deg); } }
+
+    .noscript-note {
+      position: fixed; inset: auto 16px 16px; z-index: 3000;
+      padding: 14px 18px; border-radius: var(--r);
+      background: var(--rose-lt); color: var(--rose);
+      border: 1px solid var(--rose); font-weight: 700; text-align: center;
+    }
+
     /* ─── Footer ──────────────────────────────────────── */
     .site-footer {
       margin-top: 24px;
@@ -846,6 +892,22 @@
   </style>
 </head>
 <body>
+  <div id="splash" aria-hidden="true">
+    <div class="splash-inner">
+      <div class="splash-mark">🐾</div>
+      <div class="splash-title">小寵物中文練習店</div>
+      <div class="splash-spinner"></div>
+    </div>
+  </div>
+  <script>
+    // Safety net: never leave the splash stuck if boot fails.
+    setTimeout(function () {
+      var s = document.getElementById("splash");
+      if (s) s.classList.add("done");
+    }, 8000);
+  </script>
+  <noscript><div class="noscript-note">這個網站需要開啟 JavaScript 才能使用。</div></noscript>
+
   <div class="app">
     <header>
       <div class="brand">
@@ -2526,6 +2588,12 @@
     renderBadges();
     updateUi();
     syncFromCloudOnBoot();
+
+    const splashEl = document.getElementById("splash");
+    if (splashEl) {
+      splashEl.classList.add("done");
+      setTimeout(() => splashEl.remove(), 500);
+    }
   </script>
 </body>
 </html>
